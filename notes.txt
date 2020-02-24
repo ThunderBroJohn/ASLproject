@@ -1,0 +1,33 @@
+Notes for everyone to edit on the project.
+week08 reading on feature detection can be very useful
+
+Deliverable 1: this is our goal for class. What we want to turn in.
+
+Problems to solve: solution
+lighting: auto-adjuster equilizer. Runs on boot up and with button press to recalibrate
+
+ASL alphabet: get reference images we can use for image/feature/edge detection
+
+text to speach: solved, pyttsx3 library
+
+translate ASL symbol to character: feature/edge detection of symbol 
+    and outputs a character which is appended to a string
+
+live video, and time between letters?: recognize symbol and must break symbol 
+    before recognizing again.
+
+40 hours per contributer: we can log times indevidually.
+
+problem: skin, black and white: can use glove to eliminate problem, or try to code for both
+
+
+
+Deliverable 2: this is our expanded goals for if we have extra time.
+gesture recognition: Start with real ASL "J" and "Z"
+
+word recognition: start with most common words and begin adding them in.
+
+facial and expression detection: Include facial recognition useful for expression and emphisis.
+
+Deliverable 3: this is in case we want to write it as an app for iphone/android
+turn it into an app: lots of work
