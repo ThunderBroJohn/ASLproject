@@ -5,13 +5,16 @@ Deliverable 1: this is our goal for class. What we want to turn in.
 
 Problems to solve: solution
 lighting: auto-adjuster equilizer. Runs on boot up and with button press to recalibrate
+    -   John is looking into this
 
 ASL alphabet: get reference images we can use for image/feature/edge detection
+    -   John and Kaylee are looking into this
 
 text to speach: solved, pyttsx3 library
 
 translate ASL symbol to character: feature/edge detection of symbol 
     and outputs a character which is appended to a string
+    -   James and Bretton are looking into this
 
 live video, and time between letters?: recognize symbol and must break symbol 
     before recognizing again.
