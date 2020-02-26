@@ -28,7 +28,7 @@ problem: skin, black and white: can use glove to eliminate problem, or try to co
 Deliverable 2: this is our expanded goals for if we have extra time.
 gesture recognition: Start with real ASL "J" and "Z"
 
-word recognition: start with most common words and begin adding them in.
+word recognition: start with most common words and begin adding them in. (requires gesture recognition)
 
 facial and expression detection: Include facial recognition useful for expression and emphisis.
 
