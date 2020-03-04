@@ -6,12 +6,12 @@ import cv2 #openCV
 def extract_roi(frame, fh, fw, right_side, left_side):
     rh = fh // 2
     rw = fw // 3
-    if (right_side and left_side):
-        x = (fw // 2) - (rw // 2)
-    elif (right_side):
+    if (right_side and not left_side):
         x = 10
+    elif (not right_side and left_side):
+        x = fw - 10 - rw
     else:
-        x = fw - 10
+        x = (fw // 2) - (rw // 2)
     y = (fh // 2) - (rh // 2)
     roi = np.zeros((rh, rw, 3), dtype=np.uint8)
     roi = frame[y:y+rh, x:x+rw]
@@ -56,9 +56,9 @@ def draw_images(image_1, image_2):
 
 def main():
     # Which side of the screen should ROI be on?
-    # Set both to True if you want it in the center of the screen
-    right_side = True
-    left_side = False
+    # Set both to True or both to False if you want it in the center of the screen
+    right_side = False
+    left_side = True
 
     cap = cv2.VideoCapture(0)
 
@@ -79,12 +79,12 @@ def main():
             # Extract the region of interest
             roi = extract_roi(frame, fh, fw, right_side, left_side)
             rh, rw, _ = roi.shape
-            if (right_side and left_side):
-                x = (fw // 2) - (rw // 2)
-            elif (right_side):
+            if (right_side and not left_side):
                 x = 10
+            elif (not right_side and left_side):
+                x = fw - 10 - rw
             else:
-                x = fw - 10
+                x = (fw // 2) - (rw // 2)
             y = (fh // 2) - (rh // 2)
 
             # Draw rectangle to show user where ROI is located on screen
@@ -106,6 +106,8 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
+    cv2.destroyAllWindows()
+    cap.release()
 
 if __name__ == "__main__":
     # execute only if run as a script
