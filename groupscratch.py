@@ -38,15 +38,7 @@ def speak(talkToMe):
     engine.say(talkToMe)
     engine.runAndWait()
 
-def auto_lighting_adjustment(grayImage):
-    pass
-    """this function will take a grayscale image
-    and ballance out the lighting and contrast
-    so that analisis can be done better
-    Referenced https://answers.opencv.org/question/75510/how-to-make-auto-adjustmentsbrightness-and-contrast-for-image-android-opencv-image-correction/
-    Referenced https://stackoverflow.com/questions/57030125/automatically-adjusting-brightness-of-image-with-opencv
-    """
-    
+
 
 
 
