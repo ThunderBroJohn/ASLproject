@@ -1,0 +1,5 @@
+Please put links to libraries, tutorials, research, and 
+reference material here with a breif description.
+
+lighting and contrast
+https://answers.opencv.org/question/75510/how-to-make-auto-adjustmentsbrightness-and-contrast-for-image-android-opencv-image-correction/

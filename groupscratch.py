@@ -21,6 +21,8 @@ def run_camera_test():
     while(True):
         # Capture frame-by-frame
         ret, frame = cap.read()
+        #hsv_frame = cv2.colorChange(frame,cv2.COLOR_BGR2HSV)#for hand histogram
+        #gray_frame = cv2.colorChange(frame,cv2.COLOR_BGR2GRAY)#for comparison
 
         if (ret):
             # Display the resulting frame
@@ -32,7 +34,9 @@ def run_camera_test():
     cap.release()
     cv2.destroyAllWindows()
 
-
+def speak(talkToMe):
+    engine.say(talkToMe)
+    engine.runAndWait()
 
 def auto_lighting_adjustment(grayImage):
     pass
@@ -47,9 +51,42 @@ def auto_lighting_adjustment(grayImage):
 
 
 
+
 def main():
-    tts_test()
-    run_camera_test()
+    #tts_test()
+    #run_camera_test()
+
+    letterString = ""
+
+    #init()
+
+    cap = cv2.VideoCapture(0)
+    ret, frame = cap.read()
+
+    while(True):
+        #detect camera input
+        
+
+        """ Comparison portion
+            This is where we will 
+            1 detect the hand from the camera
+            2 compare the hand against the alphabet photo library to find a match
+            3 add letter to letterString
+            4 be able to put spaces between letters (thread timer, bool?)
+        """
+
+        if cv2.waitKey(1) & 0xFF == ord('r'):
+            pass #recalebrate
+        if cv2.waitKey(1) & 0xFF == ord('c'):
+            letterString = ""
+        if cv2.waitKey(1) & 0xFF == ord('s'):
+            speak(letterString)
+            letterString = ""
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+
+
 
 if __name__ == "__main__":
     # execute only if run as a script

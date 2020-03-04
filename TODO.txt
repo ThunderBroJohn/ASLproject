@@ -1,0 +1,11 @@
+TO DO:
+
+PROTOTYPE 1:
+Lighting calebration
+
+Hand detection - keep hand only
+
+Hand comparison
+
+string on screen
+
