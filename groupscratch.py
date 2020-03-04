@@ -21,6 +21,8 @@ def run_camera_test():
     while(True):
         # Capture frame-by-frame
         ret, frame = cap.read()
+        #hsv_frame = cv2.colorChange(frame,cv2.COLOR_BGR2HSV)#for hand histogram
+        #gray_frame = cv2.colorChange(frame,cv2.COLOR_BGR2GRAY)#for comparison
 
         if (ret):
             # Display the resulting frame
@@ -57,8 +59,14 @@ def main():
     letterString = ""
 
     #init()
+
+    cap = cv2.VideoCapture(0)
+    ret, frame = cap.read()
+
     while(True):
         #detect camera input
+        
+
         """ Comparison portion
             This is where we will 
             1 detect the hand from the camera

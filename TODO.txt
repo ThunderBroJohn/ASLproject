@@ -7,3 +7,5 @@ Hand detection - keep hand only
 
 Hand comparison
 
+string on screen
+
