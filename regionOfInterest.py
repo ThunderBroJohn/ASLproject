@@ -54,11 +54,66 @@ def draw_images(image_1, image_2):
 
     return joined_image
 
+# Code taken from http://creat-tabu.blogspot.com/2013/08/opencv-python-hand-gesture-recognition.html
+def contourDetection(img):
+    # Apply filters to clean up image
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+        ret, thresh1 = cv2.threshold(blur, 50, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+        # Find the contours
+        contours, hierarchy = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        # Extract the largest contour
+        max_area = 0
+        for i in range(len(contours)):  
+            cont = contours[i]
+            area = cv2.contourArea(cont)
+            if (area > max_area):
+                max_area = area
+                ci = i
+        cont = contours[ci]
+
+        # Draw the convex hull
+        hull = cv2.convexHull(cont)
+
+        # Calculate centr
+        moments = cv2.moments(cont)
+        if moments['m00'] != 0:
+            cx = int(moments['m10']/moments['m00']) # cx = M10/M00
+            cy = int(moments['m01']/moments['m00']) # cy = M01/M00
+
+        centr = (cx, cy)
+
+        # Display the largest contour and convex hull
+        drawing = np.zeros(img.shape, np.uint8)
+        cv2.drawContours(drawing, [cont], 0, (0, 255, 0), 2)
+        cv2.drawContours(drawing, [hull], 0, (0, 0, 255), 2)
+
+        # # Find convexity defects
+        # hull = cv2.convexHull(cont, returnPoints=False)
+        # defects = cv2.convexityDefects(cont, hull)
+
+        # # Plot defects
+        # min_d = 0
+        # max_d = 0
+        # i = 0
+        # for i in range(defects.shape[0]):
+        #     s, e, f, d = defects[i,0]
+        #     start = tuple(cont[s][0])
+        #     end = tuple(cont[e][0])
+        #     far = tuple(cont[f][0])
+        #     dist = cv2.pointPolygonTest(cont, centr, True)
+        #     cv2.line(drawing, start, end, [0, 255, 0], 2)
+        #     cv2.circle(drawing, far, 5, [0, 0, 255], -1)
+        # # print(i)
+        return drawing
+
 def main():
     # Which side of the screen should ROI be on?
     # Set both to True or both to False if you want it in the center of the screen
-    right_side = False
-    left_side = True
+    right_side = True
+    left_side = False
 
     cap = cv2.VideoCapture(0)
 
@@ -89,6 +144,9 @@ def main():
 
             # Draw rectangle to show user where ROI is located on screen
             cv2.rectangle(frame, (x, y), (x+rw, y+rh), (255, 0, 0), 2)
+
+            # Use contour detection on roi
+            roi = contourDetection(roi)
 
             # Flip images for user convenience
             roi = cv2.flip(roi, 1)
