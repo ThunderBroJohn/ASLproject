@@ -69,9 +69,9 @@ def hist_masking(frame, hist):
     return cv2.bitwise_and(frame, thresh)
 
 
-def manage_image_opr(frame, hand_hist):
-    hist_mask_image = hist_masking(frame, hand_hist)
-    return hist_mask_image
+# def manage_image_opr(frame, hand_hist):
+#     hist_mask_image = hist_masking(frame, hand_hist)
+#     return hist_mask_image
 
     # contour_list = contours(hist_mask_image)
     # max_cont = max_contour(contour_list)
