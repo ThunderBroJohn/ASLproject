@@ -1,22 +1,14 @@
 import pyttsx3
 import numpy as np
+import glob
+import os
 import cv2 #openCV
 
-# Extract Region of Interest
-def extract_roi(frame, fh, fw, right_side, left_side):
-    rh = fh // 2
-    rw = fw // 3
-    if (right_side and not left_side):
-        x = 10
-    elif (not right_side and left_side):
-        x = fw - 10 - rw
-    else:
-        x = (fw // 2) - (rw // 2)
-    y = (fh // 2) - (rh // 2)
-    roi = np.zeros((rh, rw, 3), dtype=np.uint8)
-    roi = frame[y:y+rh, x:x+rw]
-
-    return roi
+def load_image_files(subpath):
+    path = os.getcwd() + '/' + subpath
+    files = [f for f in glob.glob(path + "**/*.png", recursive=False)]
+    files.sort()
+    return files
 
 def draw_images(image_1, image_2):
     """ Draws image_1 and image_2 next to each other.
@@ -59,7 +51,10 @@ def contourDetection(img):
     # Apply filters to clean up image
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
-        ret, thresh1 = cv2.threshold(blur, 50, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+        equ = cv2.equalizeHist(blur)
+        invert = cv2.bitwise_not(equ)
+        ret, thresh1 = cv2.threshold(invert, 160, 255, cv2.THRESH_BINARY)
+        # ret, thresh1 = cv2.threshold(blur, 30, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
         # Find the contours
         contours, hierarchy = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -107,65 +102,61 @@ def contourDetection(img):
         #     cv2.line(drawing, start, end, [0, 255, 0], 2)
         #     cv2.circle(drawing, far, 5, [0, 0, 255], -1)
         # # print(i)
+
+        rows, cols, _ = img.shape
+        for row in range(0, rows):
+            for col in range(0, cols):
+                value = thresh1[row][col]
+                drawing[row][col] = (value, value, value)
+
         return drawing
 
-def main():
-    # Which side of the screen should ROI be on?
-    # Set both to True or both to False if you want it in the center of the screen
-    right_side = False
-    left_side = True
+def preprocess_all_files():
+    subpath = "alphabet cropped"
+    files = load_image_files(subpath)
 
-    cap = cv2.VideoCapture(0)
+    print(files)
+    num_files = len(files)
+    print('Number of files =', num_files)
 
-    # Check if camera opened successfully
-    if (cap.isOpened() == False):
-        print("Error opening video stream")
-        return
+    if len(files) > 0:
+        for i in range(0, len(files)):
+            frame = cv2.imread(files[i])
 
-    fw = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    fh = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = int(cap.get(cv2.CAP_PROP_FPS))
-    
-    while(cap.isOpened()):
-        #detect camera input
-        ret, frame = cap.read()
+            if frame is not None:
+                # Use contour detection on roi
+                roi = contourDetection(frame)
 
-        if ret == True:
-            # Extract the region of interest
-            roi = extract_roi(frame, fh, fw, right_side, left_side)
-            rh, rw, _ = roi.shape
-            if (right_side and not left_side):
-                x = 10
-            elif (not right_side and left_side):
-                x = fw - 10 - rw
+                # # Create resulting frame
+                # frame = draw_images(roi, frame)
+
+                # Display the resulting frame
+                cv2.imshow("Result", draw_images(roi, frame))
+                cv2.waitKey(100)
+
+                # Write result file
+                cv2.imwrite(f"preprocessed alphabet/{i}.png", roi)
             else:
-                x = (fw // 2) - (rw // 2)
-            y = (fh // 2) - (rh // 2)
+                print("Frame is None.")
 
-            # Draw rectangle to show user where ROI is located on screen
-            cv2.rectangle(frame, (x, y), (x+rw, y+rh), (255, 0, 0), 2)
+        cv2.destroyAllWindows()
+    else:
+        print("No files found.")
 
-            # Use contour detection on roi
-            roi = contourDetection(roi)
+def main():
 
-            # Flip images for user convenience
-            roi = cv2.flip(roi, 1)
-            frame = cv2.flip(frame, 1)
+    # gray = cv2.imread("alphabet cropped/v2.png", 0)
+    # blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    # equ = cv2.equalizeHist(blur)
+    # invert = cv2.bitwise_not(equ)
+    # ret, threshold = cv2.threshold(invert, 160, 255, cv2.THRESH_BINARY)
+    # # blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    # # ret, threshold = cv2.threshold(blur, 200, 255, cv2.THRESH_BINARY_INV)
 
-            # Create resulting frame
-            frame = draw_images(roi, frame)
+    # cv2.imshow("Result", draw_images(threshold, gray))
+    # cv2.waitKey(0)
 
-            # Display the resulting frame
-            cv2.imshow("ROI Feedback", frame)
-            cv2.waitKey(1000 // fps)
-        else:
-            break
-        
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cv2.destroyAllWindows()
-    cap.release()
+    preprocess_all_files()
 
 if __name__ == "__main__":
     # execute only if run as a script
