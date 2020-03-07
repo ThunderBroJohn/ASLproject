@@ -1,171 +1,155 @@
+#ASL Translation project
+#Kaylee Hertzog, John Miller, James Call, Bretton Steiner
+
+#imports
 import pyttsx3
 import numpy as np
 import cv2 #openCV
 
-# Extract Region of Interest
-def extract_roi(frame, fh, fw, right_side, left_side):
-    rh = fh // 2
-    rw = fw // 3
-    if (right_side and not left_side):
-        x = 10
-    elif (not right_side and left_side):
-        x = fw - 10 - rw
-    else:
-        x = (fw // 2) - (rw // 2)
-    y = (fh // 2) - (rh // 2)
-    roi = np.zeros((rh, rw, 3), dtype=np.uint8)
-    roi = frame[y:y+rh, x:x+rw]
+hand_hist = None
+traverse_point = []
+total_rectangle = 9
+hand_rect_one_x = None
+hand_rect_one_y = None
 
-    return roi
+hand_rect_two_x = None
+hand_rect_two_y = None
 
-def draw_images(image_1, image_2):
-    """ Draws image_1 and image_2 next to each other.
-    Args:
-    image_1 (numpy.ndarray): The first image (can be color or grayscale).
-    image_2 (numpy.ndarray): The image to search in (can be color or grayscale)
+def rescale_frame(frame, wpercent=130, hpercent=130):
+    width = int(frame.shape[1] * wpercent / 100)
+    height = int(frame.shape[0] * hpercent / 100)
+    return cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
 
-    Returns:
-    output (numpy.ndarray): An output image that draws lines from the input
-                            image to the output image based on where the
-                            matching features are.
-    """
-    # Compute number of channels.
-    num_channels = 1
-    if len(image_1.shape) == 3:
-        num_channels = image_1.shape[2]
-    # Separation between images.
-    margin = 10
-    # Create an array that will fit both images (with a margin of 10 to
-    # separate the two images)
-    joined_image = np.zeros((max(image_1.shape[0], image_2.shape[0]),
-                            image_1.shape[1] + image_2.shape[1] + margin,
-                            3), dtype=np.uint8)
-    if num_channels == 1:
-        for channel_idx in range(3):
-            joined_image[:image_1.shape[0],
-                         :image_1.shape[1],
-                         channel_idx] = image_1
-            joined_image[:image_2.shape[0],
-                         image_1.shape[1] + margin:,
-                         channel_idx] = image_2
-    else:
-        joined_image[:image_1.shape[0], :image_1.shape[1]] = image_1
-        joined_image[:image_2.shape[0], image_1.shape[1] + margin:] = image_2
+def draw_rect(frame):
+    rows, cols, _ = frame.shape
+    global total_rectangle, hand_rect_one_x, hand_rect_one_y, hand_rect_two_x, hand_rect_two_y
 
-    return joined_image
+    hand_rect_one_x = np.array(
+        [6 * rows / 20, 6 * rows / 20, 6 * rows / 20, 9 * rows / 20, 9 * rows / 20, 9 * rows / 20, 12 * rows / 20,
+         12 * rows / 20, 12 * rows / 20], dtype=np.uint32)
 
-# Code taken from http://creat-tabu.blogspot.com/2013/08/opencv-python-hand-gesture-recognition.html
-def contourDetection(img):
-    # Apply filters to clean up image
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        blur = cv2.GaussianBlur(gray, (5, 5), 0)
-        ret, thresh1 = cv2.threshold(blur, 50, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    hand_rect_one_y = np.array(
+        [9 * cols / 20, 10 * cols / 20, 11 * cols / 20, 9 * cols / 20, 10 * cols / 20, 11 * cols / 20, 9 * cols / 20,
+         10 * cols / 20, 11 * cols / 20], dtype=np.uint32)
 
-        # Find the contours
-        contours, hierarchy = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    hand_rect_two_x = hand_rect_one_x + 10
+    hand_rect_two_y = hand_rect_one_y + 10
 
-        # Extract the largest contour
-        max_area = 0
-        for i in range(len(contours)):  
-            cont = contours[i]
-            area = cv2.contourArea(cont)
-            if (area > max_area):
-                max_area = area
-                ci = i
-        cont = contours[ci]
+    for i in range(total_rectangle):
+        cv2.rectangle(frame, (hand_rect_one_y[i], hand_rect_one_x[i]),
+                      (hand_rect_two_y[i], hand_rect_two_x[i]),
+                      (0, 255, 0), 1)
 
-        # Draw the convex hull
-        hull = cv2.convexHull(cont)
+    return frame
 
-        # Calculate centr
-        moments = cv2.moments(cont)
-        if moments['m00'] != 0:
-            cx = int(moments['m10']/moments['m00']) # cx = M10/M00
-            cy = int(moments['m01']/moments['m00']) # cy = M01/M00
 
-        centr = (cx, cy)
+def hand_histogram(frame):
+    global hand_rect_one_x, hand_rect_one_y
 
-        # Display the largest contour and convex hull
-        drawing = np.zeros(img.shape, np.uint8)
-        cv2.drawContours(drawing, [cont], 0, (0, 255, 0), 2)
-        cv2.drawContours(drawing, [hull], 0, (0, 0, 255), 2)
+    hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    roi = np.zeros([90, 10, 3], dtype=hsv_frame.dtype)
 
-        # # Find convexity defects
-        # hull = cv2.convexHull(cont, returnPoints=False)
-        # defects = cv2.convexityDefects(cont, hull)
+    for i in range(total_rectangle):
+        roi[i * 10: i * 10 + 10, 0: 10] = hsv_frame[hand_rect_one_x[i]:hand_rect_one_x[i] + 10,
+                                          hand_rect_one_y[i]:hand_rect_one_y[i] + 10]
 
-        # # Plot defects
-        # min_d = 0
-        # max_d = 0
-        # i = 0
-        # for i in range(defects.shape[0]):
-        #     s, e, f, d = defects[i,0]
-        #     start = tuple(cont[s][0])
-        #     end = tuple(cont[e][0])
-        #     far = tuple(cont[f][0])
-        #     dist = cv2.pointPolygonTest(cont, centr, True)
-        #     cv2.line(drawing, start, end, [0, 255, 0], 2)
-        #     cv2.circle(drawing, far, 5, [0, 0, 255], -1)
-        # # print(i)
-        return drawing
+    hand_hist = cv2.calcHist([roi], [0, 1], None, [180, 256], [0, 180, 0, 256])
+    return cv2.normalize(hand_hist, hand_hist, 0, 255, cv2.NORM_MINMAX)
+
+
+def hist_masking(frame, hist):
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    dst = cv2.calcBackProject([hsv], [0, 1], hist, [0, 180, 0, 256], 1)
+
+    disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (31, 31))
+
+    cv2.filter2D(dst, -1, disc, dst)
+
+    ret, thresh = cv2.threshold(dst, 150, 255, cv2.THRESH_BINARY)
+
+    thresh = cv2.dilate(thresh, None, iterations=5)
+
+    rows, cols = thresh.shape
+    top = None
+    bottom = None
+    left = None
+    right = None
+    sumcols = np.sum(thresh, axis=0)
+    sumrows = np.sum(thresh, axis=1)
+
+    i = 0
+    while (top is None):
+        if (sumrows[i] != 0):
+            top = i
+        i += 1
+
+    i = rows - 1
+    while (bottom is None):
+        if (sumrows[i] != 0):
+            bottom = i
+        i -= 1
+
+    i = 0
+    while (left is None):
+        if (sumcols[i] != 0):
+            left = i
+        i += 1
+
+    i = cols - 1
+    while (right is None):
+        if (sumcols[i] != 0):
+            right = i
+        i -= 1
+
+    # For debugging:
+    # print(f"Top: {top}, Bottom: {bottom}, Left: {left}, Right: {right}")
+
+    # This portion will crop until only the Region of Interest remains
+    # mask = np.zeros((rows, cols), dtype=np.uint8)
+    # mask[top : bottom, left : right] = np.full((bottom - top, right - left), 255, dtype=np.uint8)
+    # mask = cv2.merge((mask, mask, mask))
+    # final = cv2.bitwise_and(frame, mask)
+
+    # This portion will keep the whole frame, but draw a rectangle representing the Region of Interest
+    cv2.rectangle(frame, (left, top), (right, bottom), (255, 0, 0), 2)
+
+    return frame
+
+
+def manage_image_opr(frame, hand_hist):
+    hist_mask_image = hist_masking(frame, hand_hist)
+    return hist_mask_image
+
 
 def main():
-    # Which side of the screen should ROI be on?
-    # Set both to True or both to False if you want it in the center of the screen
-    right_side = False
-    left_side = True
+    global hand_hist
+    is_hand_hist_created = False
+    capture = cv2.VideoCapture(0)
 
-    cap = cv2.VideoCapture(0)
+    while capture.isOpened():
+        pressed_key = cv2.waitKey(1)
+        _, frame = capture.read()
 
-    # Check if camera opened successfully
-    if (cap.isOpened() == False):
-        print("Error opening video stream")
-        return
+        if pressed_key & 0xFF == ord('z'):
+            is_hand_hist_created = True
+            hand_hist = hand_histogram(frame)
 
-    fw = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    fh = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = int(cap.get(cv2.CAP_PROP_FPS))
-    
-    while(cap.isOpened()):
-        #detect camera input
-        ret, frame = cap.read()
+        if is_hand_hist_created:
+            frame = hist_masking(frame, hand_hist)
 
-        if ret == True:
-            # Extract the region of interest
-            roi = extract_roi(frame, fh, fw, right_side, left_side)
-            rh, rw, _ = roi.shape
-            if (right_side and not left_side):
-                x = 10
-            elif (not right_side and left_side):
-                x = fw - 10 - rw
-            else:
-                x = (fw // 2) - (rw // 2)
-            y = (fh // 2) - (rh // 2)
-
-            # Draw rectangle to show user where ROI is located on screen
-            cv2.rectangle(frame, (x, y), (x+rw, y+rh), (255, 0, 0), 2)
-
-            # Use contour detection on roi
-            roi = contourDetection(roi)
-
-            # Flip images for user convenience
-            roi = cv2.flip(roi, 1)
-            frame = cv2.flip(frame, 1)
-
-            # Create resulting frame
-            frame = draw_images(roi, frame)
-
-            # Display the resulting frame
-            cv2.imshow("ROI Feedback", frame)
-            cv2.waitKey(1000 // fps)
         else:
-            break
-        
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+            frame = draw_rect(frame)
+
+        frame = cv2.flip(frame, 1)
+        cv2.imshow("Live Feed", rescale_frame(frame))
+
+        if pressed_key == 27:
             break
 
     cv2.destroyAllWindows()
-    cap.release()
+    capture.release()
+        
 
 if __name__ == "__main__":
     # execute only if run as a script
