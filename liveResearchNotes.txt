@@ -3,3 +3,11 @@ reference material here with a breif description.
 
 lighting and contrast
 https://answers.opencv.org/question/75510/how-to-make-auto-adjustmentsbrightness-and-contrast-for-image-android-opencv-image-correction/
+
+Hand gesture recognition with machine learning.
+haar cascade hand detection opencv
+https://www.youtube.com/watch?v=LYw9RzS54OI
+
+orb matching and statistics
+https://answers.opencv.org/question/119485/orb-match-score-and-compare-a-database/
+
