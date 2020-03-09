@@ -1,10 +1,5 @@
-#ASL Translation project
-#Kaylee Hertzog, John Miller, James Call, Bretton Steiner
-
-#imports
-import pyttsx3
+import cv2
 import numpy as np
-import cv2 #openCV
 
 hand_hist = None
 traverse_point = []
@@ -14,6 +9,7 @@ hand_rect_one_y = None
 
 hand_rect_two_x = None
 hand_rect_two_y = None
+
 
 def rescale_frame(frame, wpercent=130, hpercent=130):
     width = int(frame.shape[1] * wpercent / 100)
@@ -59,67 +55,43 @@ def hand_histogram(frame):
 
 def hist_masking(frame, hist):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
     dst = cv2.calcBackProject([hsv], [0, 1], hist, [0, 180, 0, 256], 1)
 
     disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (31, 31))
-
     cv2.filter2D(dst, -1, disc, dst)
 
     ret, thresh = cv2.threshold(dst, 150, 255, cv2.THRESH_BINARY)
 
-    thresh = cv2.dilate(thresh, None, iterations=5)
+    # thresh = cv2.dilate(thresh, None, iterations=5)
 
-    rows, cols = thresh.shape
-    top = None
-    bottom = None
-    left = None
-    right = None
-    sumcols = np.sum(thresh, axis=0)
-    sumrows = np.sum(thresh, axis=1)
+    thresh = cv2.merge((thresh, thresh, thresh))
 
-    i = 0
-    while (top is None):
-        if (sumrows[i] != 0):
-            top = i
-        i += 1
-
-    i = rows - 1
-    while (bottom is None):
-        if (sumrows[i] != 0):
-            bottom = i
-        i -= 1
-
-    i = 0
-    while (left is None):
-        if (sumcols[i] != 0):
-            left = i
-        i += 1
-
-    i = cols - 1
-    while (right is None):
-        if (sumcols[i] != 0):
-            right = i
-        i -= 1
-
-    # For debugging:
-    # print(f"Top: {top}, Bottom: {bottom}, Left: {left}, Right: {right}")
-
-    # This portion will crop until only the Region of Interest remains
-    # mask = np.zeros((rows, cols), dtype=np.uint8)
-    # mask[top : bottom, left : right] = np.full((bottom - top, right - left), 255, dtype=np.uint8)
-    # mask = cv2.merge((mask, mask, mask))
-    # final = cv2.bitwise_and(frame, mask)
-
-    # This portion will keep the whole frame, but draw a rectangle representing the Region of Interest
-    cv2.rectangle(frame, (left, top), (right, bottom), (255, 0, 0), 2)
-
-    return frame
+    return cv2.bitwise_and(frame, thresh)
 
 
-def manage_image_opr(frame, hand_hist):
-    hist_mask_image = hist_masking(frame, hand_hist)
-    return hist_mask_image
+# def manage_image_opr(frame, hand_hist):
+#     hist_mask_image = hist_masking(frame, hand_hist)
+#     return hist_mask_image
+
+    # contour_list = contours(hist_mask_image)
+    # max_cont = max_contour(contour_list)
+
+    # cnt_centroid = centroid(max_cont)
+    # cv2.circle(frame, cnt_centroid, 5, [255, 0, 255], -1)
+
+    # if max_cont is not None:
+    #     hull = cv2.convexHull(max_cont, returnPoints=False)
+    #     defects = cv2.convexityDefects(max_cont, hull)
+    #     far_point = farthest_point(defects, max_cont, cnt_centroid)
+    #     print("Centroid : " + str(cnt_centroid) + ", farthest Point : " + str(far_point))
+    #     cv2.circle(frame, far_point, 5, [0, 0, 255], -1)
+    #     if len(traverse_point) < 20:
+    #         traverse_point.append(far_point)
+    #     else:
+    #         traverse_point.pop(0)
+    #         traverse_point.append(far_point)
+
+    #     draw_circles(frame, traverse_point)
 
 
 def main():
@@ -141,7 +113,6 @@ def main():
         else:
             frame = draw_rect(frame)
 
-        frame = cv2.flip(frame, 1)
         cv2.imshow("Live Feed", rescale_frame(frame))
 
         if pressed_key == 27:
@@ -149,8 +120,7 @@ def main():
 
     cv2.destroyAllWindows()
     capture.release()
-        
 
-if __name__ == "__main__":
-    # execute only if run as a script
+
+if __name__ == '__main__':
     main()
