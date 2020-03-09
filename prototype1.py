@@ -21,7 +21,11 @@ def speak(talkToMe):
 
 #This function will write the translated letters to the screen.
 def drawTextToScreen(frame, showText):
+    red = (0,0,255)
     #add in draw text to screen!!!!!!!!!!!!! Kaylee's work
+    #cv2.putText(image,"Hello World!!!", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+    frame = cv2.putText(frame,showText, (10,10), cv2.FONT_HERSHEY_SIMPLEX, 2, red)
+    #Need to adjust position XY to bottom left of screen.
     return frame
 
 
