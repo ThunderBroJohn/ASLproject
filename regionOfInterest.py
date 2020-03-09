@@ -7,6 +7,7 @@ import numpy as np
 import cv2 #openCV
 
 hand_hist = None
+is_hand_hist_created = False
 traverse_point = []
 total_rectangle = 9
 hand_rect_one_x = None
@@ -111,20 +112,36 @@ def hist_masking(frame, hist):
     # mask = cv2.merge((mask, mask, mask))
     # final = cv2.bitwise_and(frame, mask)
 
+    # This portion will keep only the Region of Interest
+    roi = np.zeros((bottom - top, right - left), dtype=np.uint8)
+    roi = frame[top : bottom, left : right]
+
     # This portion will keep the whole frame, but draw a rectangle representing the Region of Interest
     cv2.rectangle(frame, (left, top), (right, bottom), (255, 0, 0), 2)
 
-    return frame
+    return frame, roi
 
+def calibrate(frame):
+    global is_hand_hist_created, hand_hist
+    if is_hand_hist_created:
+        is_hand_hist_created = False
+    else:
+        is_hand_hist_created = True
+        hand_hist = hand_histogram(frame)
 
-def manage_image_opr(frame, hand_hist):
-    hist_mask_image = hist_masking(frame, hand_hist)
-    return hist_mask_image
+def extract_roi(frame):
+    global is_hand_hist_created, hand_hist
+    if is_hand_hist_created:
+        frame, roi = hist_masking(frame, hand_hist)
+    else:
+        frame = draw_rect(frame)
+        roi = None
 
+    return frame, roi
 
 def main():
     global hand_hist
-    is_hand_hist_created = False
+    global is_hand_hist_created
     capture = cv2.VideoCapture(0)
 
     while capture.isOpened():
