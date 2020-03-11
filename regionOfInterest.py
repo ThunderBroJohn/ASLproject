@@ -2,7 +2,6 @@
 #Kaylee Hertzog, John Miller, James Call, Bretton Steiner
 
 #imports
-import pyttsx3
 import numpy as np
 import cv2 #openCV
 

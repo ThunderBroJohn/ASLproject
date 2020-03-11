@@ -6,7 +6,7 @@ import cv2 #openCV
 
 def load_image_files(subpath):
     path = os.getcwd() + '/' + subpath
-    files = [f for f in glob.glob(path + "**/*.png", recursive=False)]
+    files = [f for f in glob.glob(path + "**/*.jpg", recursive=False)]
     files.sort()
     return files
 
@@ -49,11 +49,15 @@ def draw_images(image_1, image_2):
 # Code taken from http://creat-tabu.blogspot.com/2013/08/opencv-python-hand-gesture-recognition.html
 def contourDetection(img):
     # Apply filters to clean up image
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        blur = cv2.GaussianBlur(gray, (5, 5), 0)
-        equ = cv2.equalizeHist(blur)
-        invert = cv2.bitwise_not(equ)
-        ret, thresh1 = cv2.threshold(invert, 160, 255, cv2.THRESH_BINARY)
+        # gray = cv2.imread("alphabet cropped/a1.jpg", 0)
+        blur = cv2.GaussianBlur(img, (7, 7), 0)
+        invert = cv2.bitwise_not(blur)
+        ret, thresh1 = cv2.threshold(invert, 160, 255, cv2.THRESH_BINARY_INV)
+        # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # blur = cv2.GaussianBlur(gray, (5, 5), 0)
+        # equ = cv2.equalizeHist(blur)
+        # invert = cv2.bitwise_not(equ)
+        # ret, thresh1 = cv2.threshold(invert, 160, 255, cv2.THRESH_BINARY)
         # ret, thresh1 = cv2.threshold(blur, 30, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
         # Find the contours
@@ -81,7 +85,8 @@ def contourDetection(img):
         centr = (cx, cy)
 
         # Display the largest contour and convex hull
-        drawing = np.zeros(img.shape, np.uint8)
+        rows, cols = img.shape
+        drawing = np.zeros((rows, cols, 3), dtype=np.uint8)
         cv2.drawContours(drawing, [cont], 0, (0, 255, 0), 2)
         cv2.drawContours(drawing, [hull], 0, (0, 0, 255), 2)
 
@@ -103,7 +108,7 @@ def contourDetection(img):
         #     cv2.circle(drawing, far, 5, [0, 0, 255], -1)
         # # print(i)
 
-        rows, cols, _ = img.shape
+        rows, cols = img.shape
         for row in range(0, rows):
             for col in range(0, cols):
                 value = thresh1[row][col]
@@ -121,7 +126,7 @@ def preprocess_all_files():
 
     if len(files) > 0:
         for i in range(0, len(files)):
-            frame = cv2.imread(files[i])
+            frame = cv2.imread(files[i], 0)
 
             if frame is not None:
                 # Use contour detection on roi
@@ -131,8 +136,9 @@ def preprocess_all_files():
                 # frame = draw_images(roi, frame)
 
                 # Display the resulting frame
-                cv2.imshow("Result", draw_images(roi, frame))
-                cv2.waitKey(100)
+                # cv2.imshow("Result", draw_images(roi, frame))
+                # cv2.imshow("Result", roi)
+                # cv2.waitKey(100)
 
                 # Write result file
                 cv2.imwrite(f"preprocessed alphabet/{i}.png", roi)
@@ -145,15 +151,15 @@ def preprocess_all_files():
 
 def main():
 
-    # gray = cv2.imread("alphabet cropped/v2.png", 0)
-    # blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    # equ = cv2.equalizeHist(blur)
-    # invert = cv2.bitwise_not(equ)
-    # ret, threshold = cv2.threshold(invert, 160, 255, cv2.THRESH_BINARY)
+    # gray = cv2.imread("alphabet cropped/a1.jpg", 0)
+    # blur = cv2.GaussianBlur(gray, (7, 7), 0)
+    # # equ = cv2.equalizeHist(blur)
+    # invert = cv2.bitwise_not(blur)
+    # ret, threshold = cv2.threshold(invert, 160, 255, cv2.THRESH_BINARY_INV)
     # # blur = cv2.GaussianBlur(gray, (5, 5), 0)
     # # ret, threshold = cv2.threshold(blur, 200, 255, cv2.THRESH_BINARY_INV)
 
-    # cv2.imshow("Result", draw_images(threshold, gray))
+    # cv2.imshow("Result", draw_images(threshold, blur))
     # cv2.waitKey(0)
 
     preprocess_all_files()
