@@ -10,14 +10,14 @@ import cv2 #openCV
 import regionOfInterest
 
 #initialize Text to speach
-engine = pyttsx3.init()
-engine.setProperty('rate', 165)#normal human speach is about 150 wpm
+# engine = pyttsx3.init()
+# engine.setProperty('rate', 165)#normal human speach is about 150 wpm
 
 #OUTPUT functions
 #This function will run the text to speach output
-def speak(talkToMe):
-    engine.say(talkToMe)
-    engine.runAndWait()
+# def speak(talkToMe):
+#     engine.say(talkToMe)
+#     engine.runAndWait()
 
 #This function will write the translated letters to the screen.
 def drawTextToScreen(frame, showText):
@@ -54,41 +54,50 @@ def main():
 
     #capture computer camera
     cap = cv2.VideoCapture(0)
-    ret, frame = cap.read()
-
-    #calibrate!!!!!
 
     #run translation program
-    while(ret == True):
-        #first flip image <--> people work better with mirrors
-        frame = cv2.flip(frame, 1)
+    while(True):
+        ret, frame = cap.read()
 
-        #Get Region of Interest
-        frame, roi = regionOfInterest.extract_roi(frame)
+        if (ret):
+            #first flip image <--> people work better with mirrors
+            frame = cv2.flip(frame, 1)
 
-        #If look for letter is false show output but 
-        # don't look for new letter until timer resets
-        #add !!!!!!!!!!!!
-        lookForLetter = False
+            #Get Region of Interest
+            frame, roi = regionOfInterest.extract_roi(frame)
 
-        #look for ASL letter or symbol in frame
-        #this is version 1 looking for stills not gestures
-        letterString += translateSymbol(frame, lookForLetter)
+            #If look for letter is false show output but
+            # don't look for new letter until timer resets
+            #add !!!!!!!!!!!!
+            lookForLetter = False
+
+            #look for ASL letter or symbol in frame
+            #this is version 1 looking for stills not gestures
+            letterString += translateSymbol(frame, lookForLetter)
 
 
-        #show frame
-        frame = drawTextToScreen(frame, letterString)
+            #show frame
+            frame = drawTextToScreen(frame, letterString)
+
+            cv2.imshow("Prototype 1", frame)
+            key = cv2.waitKey(1)
 
         #At end of loop check for keyboard input
-        if cv2.waitKey(1) & 0xFF == ord('r'): #recalibrate
+        if key and key == ord('r'): #recalibrate
             regionOfInterest.calibrate(frame)
-        if cv2.waitKey(1) & 0xFF == ord('c'): #clear
+            key = None
+        if key and key == ord('c'): #clear
             letterString = "" #reset
-        if cv2.waitKey(1) & 0xFF == ord('s'): #speak
-            speak(letterString) 
+            key = None
+        if key and key == ord('s'): #speak
+            # speak(letterString)
             letterString = "" #reset
-        if cv2.waitKey(1) & 0xFF == ord('q'): #quit
+            key = None
+        if key and key == ord('q'): #quit
+            key = None
             break
+
+    cv2.destroyAllWindows()
 
 
 #run main
