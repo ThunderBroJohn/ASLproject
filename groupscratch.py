@@ -15,6 +15,39 @@ def tts_test():
     engine.say("Hello, how are you today?")
     engine.runAndWait()
 
+#folowing functions from https://towardsdatascience.com/canny-edge-detection-step-by-step-in-python-computer-vision-b49c3a2d8123
+def gaussian_kernel(size=5, sigma=1):
+    size = int(size) // 2
+    x, y = np.mgrid[-size:size+1, -size:size+1]
+    normal = 1 / (2.0 * np.pi * sigma**2)
+    g =  np.exp(-((x**2 + y**2) / (2.0*sigma**2))) * normal
+    return g
+    #alternatively just use src = cv.GaussianBlur(src, (5, 5), 0)
+    #gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
+
+def sobel_gradient_edge(gray):
+    #Kx = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], np.float32)#kernal X direction
+    #Ky = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], np.float32)#kernal Y direction
+    #Ix = ndimage.filters.convolve(img, Kx) translate from scipy image processing
+    #Iy = ndimage.filters.convolve(img, Ky)
+    #G = np.hypot(Ix, Iy)
+    #G = G / G.max() * 255
+    #theta = np.arctan2(Iy, Ix)
+    #return (G, theta)
+    scale = 1
+    delta = 0
+    ddepth = cv.CV_16S
+    grad_x = cv.Sobel(gray, ddepth, 1, 0, ksize=3, scale=scale, delta=delta, borderType=cv.BORDER_DEFAULT)
+    # Gradient-Y
+    # grad_y = cv.Scharr(gray,ddepth,0,1)
+    grad_y = cv.Sobel(gray, ddepth, 0, 1, ksize=3, scale=scale, delta=delta, borderType=cv.BORDER_DEFAULT)
+    
+    abs_grad_x = cv.convertScaleAbs(grad_x)
+    abs_grad_y = cv.convertScaleAbs(grad_y)
+    grad = cv.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0)
+    return grad
+
+    
 
 #funciton from https://stackoverflow.com/questions/56905592/automatic-contrast-and-brightness-adjustment-of-a-color-photo-of-a-sheet-of-pape
 def automatic_brightness_and_contrast(image, clip_hist_percent=1):
@@ -64,19 +97,24 @@ def automatic_brightness_and_contrast(image, clip_hist_percent=1):
 def run_camera_test():
     """ Live capture your laptop camera """
     cap = cv2.VideoCapture(0)  # Notice the '0' instead of a filename
+    
     while(True):
         # Capture frame-by-frame
         ret, frame = cap.read()
-        frame, _, _ = automatic_brightness_and_contrast(frame,1)
+        
+        #frame, _, _ = automatic_brightness_and_contrast(frame,1)
         #hsv_frame = cv2.colorChange(frame,cv2.COLOR_BGR2HSV)#for hand histogram
-        #gray_frame = cv2.colorChange(frame,cv2.COLOR_BGR2GRAY)#for comparison
+        #frame = cv2.colorChange(frame,cv2.COLOR_BGR2GRAY)#for comparison gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
+        frame = cv2.GaussianBlur(frame, (5,5), 0)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        frame = sobel_gradient_edge(frame)
 
-        if (ret):
-            # Display the resulting frame
-            cv2.imshow('frame', frame)
-            # Wait for 'q' to quit the program
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+        
+        # Display the resulting frame
+        cv2.imshow('frame', frame)
+        # Wait for 'q' to quit the program
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
     # When everything done, release the capture
     cap.release()
     cv2.destroyAllWindows()
