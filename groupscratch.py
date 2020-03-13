@@ -125,8 +125,8 @@ def speak(talkToMe):
 
 
 def main():
-    #tts_test()
-    run_camera_test()
+    tts_test()
+    #run_camera_test()
 
     letterString = ""
 
