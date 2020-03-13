@@ -39,7 +39,9 @@ def translateSymbol(frame, lookForLetter):
         return ""
     #ADD TRANSLATION LOGIC HERE
     
-
+def image_compare(image1, image2):
+    sum_diff = np.sum(cv2.absdiff(image1, image2))
+    return sum_diff
 
 def main():
 
