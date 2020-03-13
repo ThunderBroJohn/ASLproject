@@ -4,7 +4,18 @@
 import numpy as np
 import cv2 #openCV
 
+#This function will write the translated letters to the screen.
+def draw_text(image, txt, pos):
+    font_face = cv2.FONT_HERSHEY_SIMPLEX
+    scale = 1.2
+    color = (0, 0, 255)
+    #thickness = cv2.FILLED
 
+    #txt_size = cv2.getTextSize(txt, font_face, scale, thickness)
+    image = cv2.putText(image, txt, pos, font_face, scale, color, 1, cv2.LINE_AA)
+    return image
+
+#this function will create an image of blurred edges
 def sobel_gradient_edge(image, blur=(5,5)):
     #blur image
     gray = cv2.colorChange(image, cv2.COLOR_BGR2GRAY)

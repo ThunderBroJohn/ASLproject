@@ -20,16 +20,7 @@ import imageProcesses
 #     engine.say(talkToMe)
 #     engine.runAndWait()
 
-#This function will write the translated letters to the screen.
-def draw_text(image, txt, pos):
-    font_face = cv2.FONT_HERSHEY_SIMPLEX
-    scale = 1.2
-    color = (0, 0, 255)
-    thickness = cv2.FILLED
 
-    #txt_size = cv2.getTextSize(txt, font_face, scale, thickness)
-    image = cv2.putText(image, txt, pos, font_face, scale, color, 1, cv2.LINE_AA)
-    return image
 
 
 """
@@ -80,7 +71,7 @@ def main():
 
 
             #show frame
-            frame = draw_text(frame, letterString, (10,40))
+            frame = imageProcesses.draw_text(frame, letterString, (10,40))
 
             cv2.imshow("Prototype 1", frame)
             key = cv2.waitKey(1)
