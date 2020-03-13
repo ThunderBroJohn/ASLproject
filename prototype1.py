@@ -8,6 +8,7 @@ import pyttsx3
 import numpy as np
 import cv2 #openCV
 import regionOfInterest
+import imageProcesses
 
 #initialize Text to speach
 # engine = pyttsx3.init()
@@ -20,13 +21,15 @@ import regionOfInterest
 #     engine.runAndWait()
 
 #This function will write the translated letters to the screen.
-def drawTextToScreen(frame, showText):
-    red = (0,0,255)
-    #add in draw text to screen!!!!!!!!!!!!! Kaylee's work
-    #cv2.putText(image,"Hello World!!!", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
-    frame = cv2.putText(frame,showText, (10,10), cv2.FONT_HERSHEY_SIMPLEX, 2, red)
-    #Need to adjust position XY to bottom left of screen.
-    return frame
+def draw_text(image, txt, pos):
+    font_face = cv2.FONT_HERSHEY_SIMPLEX
+    scale = 1.2
+    color = (0, 0, 255)
+    thickness = cv2.FILLED
+
+    #txt_size = cv2.getTextSize(txt, font_face, scale, thickness)
+    image = cv2.putText(image, txt, pos, font_face, scale, color, 1, cv2.LINE_AA)
+    return image
 
 
 """
@@ -49,7 +52,7 @@ def translateSymbol(frame, lookForLetter):
 def main():
 
     #string for use in output
-    letterString = ""
+    letterString = "test"
     lookForLetter = True
 
     #capture computer camera
@@ -77,7 +80,7 @@ def main():
 
 
             #show frame
-            frame = drawTextToScreen(frame, letterString)
+            frame = draw_text(frame, letterString, (10,40))
 
             cv2.imshow("Prototype 1", frame)
             key = cv2.waitKey(1)
