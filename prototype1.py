@@ -8,6 +8,7 @@ import pyttsx3
 import numpy as np
 import cv2 #openCV
 import regionOfInterest
+import resize
 import imageProcesses
 
 #initialize Text to speach
@@ -59,6 +60,10 @@ def main():
 
             #Get Region of Interest
             frame, roi = regionOfInterest.extract_roi(frame)
+
+            sobel = imageProcesses.sobel_gradient_edge(roi)
+
+            imgResized = resize.normalize_image_size(sobel)
 
             #If look for letter is false show output but
             # don't look for new letter until timer resets
