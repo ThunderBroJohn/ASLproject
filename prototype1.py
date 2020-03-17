@@ -10,6 +10,7 @@ import cv2 #openCV
 import regionOfInterest
 import resize
 import imageProcesses
+import resize
 
 #initialize Text to speach
 # engine = pyttsx3.init()
@@ -39,7 +40,9 @@ def translateSymbol(frame, lookForLetter):
         return ""
     #ADD TRANSLATION LOGIC HERE
     
-
+def image_compare(image1, image2):
+    sum_diff = np.sum(cv2.absdiff(image1, image2))
+    return sum_diff
 
 def main():
 
@@ -60,6 +63,8 @@ def main():
 
             #Get Region of Interest
             frame, roi = regionOfInterest.extract_roi(frame)
+            roi = imageProcesses.sobel_gradient_edge(roi)
+            roi = resize.normalize_image_size(roi)#500 by 500
 
             sobel = imageProcesses.sobel_gradient_edge(roi)
 
