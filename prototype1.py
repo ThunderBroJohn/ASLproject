@@ -66,10 +66,6 @@ def main():
             roi = imageProcesses.sobel_gradient_edge(roi)
             roi = resize.normalize_image_size(roi)#500 by 500
 
-            sobel = imageProcesses.sobel_gradient_edge(roi)
-
-            imgResized = resize.normalize_image_size(sobel)
-
             #If look for letter is false show output but
             # don't look for new letter until timer resets
             #add !!!!!!!!!!!!
