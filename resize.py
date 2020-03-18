@@ -28,8 +28,8 @@ def normalize_image_size(image):
     # Add black space to image until ratio is met
     image = fix_to_ratio(image)
 
-    # resize image
-    resized = cv2.resize(image, (SIDE_LENGTH, SIDE_LENGTH), interpolation = cv2.INTER_AREA)
+    # Resize image
+    resized = cv2.resize(image, (SIDE_LENGTH, SIDE_LENGTH), interpolation=cv2.INTER_AREA)
 
     # Return resized image
     return resized

@@ -80,25 +80,33 @@ def hist_masking(frame, hist):
 
     i = 0
     while (top is None):
-        if (sumrows[i] != 0):
+        if (i >= len(sumrows)):
+            break
+        elif (sumrows[i] != 0):
             top = i
         i += 1
 
     i = rows - 1
     while (bottom is None):
-        if (sumrows[i] != 0):
+        if (i <= 0):
+            break
+        elif (sumrows[i] != 0):
             bottom = i
         i -= 1
 
     i = 0
     while (left is None):
-        if (sumcols[i] != 0):
+        if (i >= len(sumcols)):
+            break
+        elif (sumcols[i] != 0):
             left = i
         i += 1
 
     i = cols - 1
     while (right is None):
-        if (sumcols[i] != 0):
+        if (i <= 0):
+            break
+        elif (sumcols[i] != 0):
             right = i
         i -= 1
 
@@ -112,11 +120,13 @@ def hist_masking(frame, hist):
     # final = cv2.bitwise_and(frame, mask)
 
     # This portion will keep only the Region of Interest
-    roi = np.zeros((bottom - top, right - left), dtype=np.uint8)
-    roi = frame[top : bottom, left : right]
+    roi = None
+    if (top is not None and bottom is not None and right is not None and left is not None):
+        roi = np.zeros((bottom - top, right - left), dtype=np.uint8)
+        roi = frame[top : bottom, left : right]
 
-    # This portion will keep the whole frame, but draw a rectangle representing the Region of Interest
-    cv2.rectangle(frame, (left, top), (right, bottom), (255, 0, 0), 2)
+        # This portion will keep the whole frame, but draw a rectangle representing the Region of Interest
+        cv2.rectangle(frame, (left, top), (right, bottom), (255, 0, 0), 2)
 
     return frame, roi
 
@@ -157,7 +167,7 @@ def main():
         else:
             frame = draw_rect(frame)
 
-        frame = cv2.flip(frame, 1)
+        # frame = cv2.flip(frame, 1)
         cv2.imshow("Live Feed", rescale_frame(frame))
 
         if pressed_key == 27:
