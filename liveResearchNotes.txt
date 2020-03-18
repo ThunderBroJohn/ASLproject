@@ -13,3 +13,6 @@ https://answers.opencv.org/question/119485/orb-match-score-and-compare-a-databas
 
 Edge
 https://towardsdatascience.com/canny-edge-detection-step-by-step-in-python-computer-vision-b49c3a2d8123
+
+recognition with percentage
+https://www.pyimagesearch.com/2017/09/11/object-detection-with-deep-learning-and-opencv/

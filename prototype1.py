@@ -15,6 +15,43 @@ import resize
 # engine = pyttsx3.init()
 # engine.setProperty('rate', 165)#normal human speach is about 150 wpm
 
+"""
+#Function IN PROGRESS
+def initialize_comparison_library():
+    #abc... and bs(backspace) and space
+    alphabetList = [(cv2.imread("ASLproject/ASLproject/edgePreprocess/a1.png"), "a")]
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"b"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c1.png"),"c"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"d"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"e"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"f"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"g"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"h"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"i"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"j"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"k"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"l"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"m"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"n"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"o"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"p"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"q"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"r"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"s"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"t"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"u"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"v"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"w"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"x"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"y"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"z"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/_1.png"),"_"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/bs1.png"),"bs"]))
+    return alphabetList
+"""
+
 #OUTPUT functions
 #This function will run the text to speach output
 # def speak(talkToMe):
