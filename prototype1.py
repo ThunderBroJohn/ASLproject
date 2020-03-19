@@ -19,44 +19,47 @@ import imageProcesses
 #Function IN PROGRESS
 def initialize_comparison_library():
     #abc... and bs(backspace) and space
-    alphabetList = [(cv2.imread("ASLproject/ASLproject/edgePreprocess/a1.png"), "a")]
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png"),"b"]))
+    alphabetList = [(cv2.imread("ASLproject/ASLproject/edgePreprocess/a1.png", 0), "a")]
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png", 0),"b"]))
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c1.png"),"c"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c2.png"),"c"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c1.png", 0),"c"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c2.png", 0),"c"]))
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/d1.png"),"d"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/e1.png"),"e"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/f1.png"),"f"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/g1.png"),"g"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/h1.png"),"h"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/i1.png"),"i"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/j1.png"),"j"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/k1.png"),"k"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/l1.png"),"l"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/m1.png"),"m"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/n1.png"),"n"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/d1.png", 0),"d"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/e1.png", 0),"e"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/f1.png", 0),"f"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/g1.png", 0),"g"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/h1.png", 0),"h"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/i1.png", 0),"i"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/j1.png", 0),"j"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/k1.png", 0),"k"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/l1.png", 0),"l"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/m1.png", 0),"m"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/n1.png", 0),"n"]))
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o1.png"),"o"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o2.png"),"o"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o1.png", 0),"o"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o2.png", 0),"o"]))
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/p1.png"),"p"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/q1.png"),"q"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/r1.png"),"r"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/s1.png"),"s"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/t1.png"),"t"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/u1.png"),"u"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/v1.png"),"v"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/w1.png"),"w"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/p1.png", 0),"p"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/q1.png", 0),"q"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/r1.png", 0),"r"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/s1.png", 0),"s"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/t1.png", 0),"t"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/u1.png", 0),"u"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/v1.png", 0),"v"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/w1.png", 0),"w"]))
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png"),"x"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png"),"x"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0),"x"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0),"x"]))
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/y1.png"),"y"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/z1.png"),"z"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/y1.png", 0),"y"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/z1.png", 0),"z"]))
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/_1.png"),"_"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/bs1.png"),"bs"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/_1.png", 0)," "]))#space or _
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/bs1.png", 0),"bs"]))
+    test = "alphabetList loaded with " + str(len(alphabetList)) + " items"
+    print(test)
+    #print(alphabetList[0][1])#a
     return alphabetList
 
 
@@ -87,10 +90,25 @@ def image_compare(image1, image2):
 def translateSymbol(frame, lookForLetter, alphabetList):
     if(not lookForLetter):
         return ""
+    difftest = image_compare(frame,alphabetList[0][0])
+    print(difftest)
+    """
+    #broken please fix
     #ADD TRANSLATION LOGIC HERE
-        minMatch = num 
-        for letter in alphabetList:
-            pass #WRITE COMPARE
+    #minMatch = number 
+    temp = [0, ""]
+    for letter in alphabetList:
+        diff = image_compare(frame,letter[0])
+        diff2 = image_compare(frame,cv2.flip(letter[0],1))
+        if(diff2 < diff):
+            diff = diff2 #take the better comparison of left or right
+
+        if(diff < temp[0]):
+            temp = [diff, letter[1]]
+    #if(temp[0] > minMatch):#??? working on this logic
+    #   return ""
+    return temp[1]   
+    """
             
 
 
@@ -125,7 +143,15 @@ def main():
 
             #look for ASL letter or symbol in frame
             #this is version 1 looking for stills not gestures
-            letterString += translateSymbol(frame, lookForLetter)
+            if(roi is not None):
+                tempLetter = translateSymbol(roi, lookForLetter, alphabetList)
+            else:
+                tempLetter = ""
+            if(tempLetter == "bs"): #If backspace symbol detected remove item from string
+                if(len(letterString) != 0): 
+                    letterString = letterString[:-1]
+            else:
+                letterString = letterString + tempLetter
 
 
             #show frame

@@ -18,7 +18,7 @@ def draw_text(image, txt, pos):
 #this function will create an image of blurred edges
 def sobel_gradient_edge(image, blur=(5,5)):
     #blur image
-    gray = cv2.colorChange(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.colorChange(image, cv2.COLOR_BGR2GRAY)#occasional hickups
     gray = cv2.GaussianBlur(gray, blur, 0)
 
     scale = 1
