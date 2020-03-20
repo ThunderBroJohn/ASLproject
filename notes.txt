@@ -34,3 +34,7 @@ facial and expression detection: Include facial recognition useful for expressio
 
 Deliverable 3: this is in case we want to write it as an app for iphone/android
 turn it into an app: lots of work
+
+
+
+use pip install -U pyttsx3==2.71 to install text to speech
