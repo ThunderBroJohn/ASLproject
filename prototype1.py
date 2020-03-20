@@ -1,10 +1,10 @@
 """
 PROTOTYPE 1
-Kaylee Hertzog, John Miller, James Call, Bretton Steiner
+Kaylee Hartzog, John Miller, James Call, Bretton Steiner
 """
 
 #imports
-import pyttsx3
+import pyttsx3 #USE VERSION 2.71
 import numpy as np
 import cv2 #openCV
 import regionOfInterest
@@ -12,11 +12,11 @@ import resize
 import imageProcesses
 
 #initialize Text to speach
-# engine = pyttsx3.init()
-# engine.setProperty('rate', 165)#normal human speach is about 150 wpm
+engine = pyttsx3.init()
+engine.setProperty('rate', 165)#normal human speach is about 150 wpm
 
 
-#Function IN PROGRESS
+#This function pulls preproccessed images for use in comparison
 def initialize_comparison_library():
     #abc... and bs(backspace) and space
     alphabetList = [(cv2.imread("ASLproject/ASLproject/edgePreprocess/a1.png", 0), "a")]
@@ -57,17 +57,17 @@ def initialize_comparison_library():
 
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/_1.png", 0)," "]))#space or _
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/bs1.png", 0),"bs"]))
-    test = "alphabetList loaded with " + str(len(alphabetList)) + " items"
-    print(test)
+    #test = "alphabetList loaded with " + str(len(alphabetList)) + " items"
+    #print(test)
     #print(alphabetList[0][1])#a
     return alphabetList
 
 
 #OUTPUT functions
 #This function will run the text to speach output
-# def speak(talkToMe):
-#     engine.say(talkToMe)
-#     engine.runAndWait()
+def speak(talkToMe):
+    engine.say(talkToMe)
+    engine.runAndWait()
 
 
 
@@ -133,8 +133,10 @@ def main():
             #Get Region of Interest
             frame, roi = regionOfInterest.extract_roi(frame)
             if (roi is not None):
-                roi = imageProcesses.sobel_gradient_edge(roi)
-                roi = resize.normalize_image_size(roi)#500 by 500
+                ###roi = imageProcesses.sobel_gradient_edge(roi)
+                ###roi = resize.normalize_image_size(roi)#500 by 500
+                cv2.imshow("ROI",roi)
+                print("I made it")
 
             #If look for letter is false show output but
             # don't look for new letter until timer resets
@@ -158,6 +160,7 @@ def main():
             frame = imageProcesses.draw_text(frame, letterString, (10,40))
 
             cv2.imshow("Prototype 1", frame)
+            
             key = cv2.waitKey(1)
 
         #At end of loop check for keyboard input
@@ -168,7 +171,7 @@ def main():
             letterString = "" #reset
             key = None
         if key and key == ord('s'): #speak
-            # speak(letterString)
+            speak(letterString)
             letterString = "" #reset
             key = None
         if key and key == ord('q'): #quit

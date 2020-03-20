@@ -120,9 +120,11 @@ def hist_masking(frame, hist):
     # final = cv2.bitwise_and(frame, mask)
 
     # This portion will keep only the Region of Interest
-    roi = None
+    # roi = None
+    roi = np.zeros((500,500,3),dtype=np.uint8)
     if (top is not None and bottom is not None and right is not None and left is not None):
-        roi = np.zeros((bottom - top, right - left), dtype=np.uint8)
+        roi = np.zeros((bottom - top, right - left,3), dtype=np.uint8)
+        #roi = np.zeros((bottom - top, right - left,3), dtype=np.uint8)#need color channel?
         roi = frame[top : bottom, left : right]
 
         # This portion will keep the whole frame, but draw a rectangle representing the Region of Interest
