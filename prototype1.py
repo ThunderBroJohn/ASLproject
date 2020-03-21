@@ -12,8 +12,8 @@ import resize
 import imageProcesses
 
 #initialize Text to speach
-# engine = pyttsx3.init()
-# engine.setProperty('rate', 165)#normal human speach is about 150 wpm
+engine = pyttsx3.init()
+engine.setProperty('rate', 165) #normal human speach is about 150 wpm
 
 
 #Function IN PROGRESS
@@ -65,9 +65,9 @@ def initialize_comparison_library():
 
 #OUTPUT functions
 #This function will run the text to speach output
-# def speak(talkToMe):
-#     engine.say(talkToMe)
-#     engine.runAndWait()
+def speak(talkToMe):
+    engine.say(talkToMe)
+    engine.runAndWait()
 
 
 
@@ -168,7 +168,7 @@ def main():
             letterString = "" #reset
             key = None
         if key and key == ord('s'): #speak
-            # speak(letterString)
+            speak(letterString)
             letterString = "" #reset
             key = None
         if key and key == ord('q'): #quit
