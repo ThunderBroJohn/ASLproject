@@ -119,6 +119,33 @@ def hist_masking(frame, hist):
     # mask = cv2.merge((mask, mask, mask))
     # final = cv2.bitwise_and(frame, mask)
 
+    # Adding extra size to ROI to ensure whole hand is captured
+    size_to_add = 50
+
+    if (top is not None):
+        if (top - size_to_add < 0):
+            top = 0
+        else:
+            top -= size_to_add
+
+    if (bottom is not None):
+        if (bottom + size_to_add > len(sumrows)):
+            bottom = len(sumrows)
+        else:
+            bottom += size_to_add
+
+    if (left is not None):
+        if (left - size_to_add < 0):
+            left = 0
+        else:
+            left -= size_to_add
+
+    if (right is not None):
+        if (right + size_to_add > len(sumcols)):
+            right = len(sumcols)
+        else:
+            right += size_to_add
+
     # This portion will keep only the Region of Interest
     # roi = None
     roi = np.zeros((500, 500, 3), dtype=np.uint8)
