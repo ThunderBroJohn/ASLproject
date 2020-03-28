@@ -5,6 +5,7 @@
 import pyttsx3
 import numpy as np
 import cv2 #openCV
+import imageProcesses
 
 #initialize Text to speach
 engine = pyttsx3.init()
@@ -97,7 +98,7 @@ def automatic_brightness_and_contrast(image, clip_hist_percent=1):
 def run_camera_test():
     """ Live capture your laptop camera """
     cap = cv2.VideoCapture(0)  # Notice the '0' instead of a filename
-    
+    speachString = "HI "
     while(True):
         # Capture frame-by-frame
         ret, frame = cap.read()
@@ -105,12 +106,19 @@ def run_camera_test():
         #frame, _, _ = automatic_brightness_and_contrast(frame,1)
         #hsv_frame = cv2.colorChange(frame,cv2.COLOR_BGR2HSV)#for hand histogram
         #frame = cv2.colorChange(frame,cv2.COLOR_BGR2GRAY)#for comparison gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
-        frame = cv2.GaussianBlur(frame, (5,5), 0)
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)#breaks... why?
-        frame = sobel_gradient_edge(frame)
+        # frame = cv2.GaussianBlur(frame, (5,5), 0)
+        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)#breaks... why?
+        # frame = sobel_gradient_edge(frame)
 
-        
+        if cv2.waitKey(1) & 0xFF == ord('a'):
+            speachString += "a"
+
+        frame = imageProcesses.draw_text(frame, speachString, (10,40))
+
         # Display the resulting frame
+        frame = cv2.GaussianBlur(frame, (5,5), 0)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        frame = sobel_gradient_edge(frame)
         cv2.imshow('frame', frame)
         # Wait for 'q' to quit the program
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -125,10 +133,13 @@ def speak(talkToMe):
 
 
 def main():
-    tts_test()
-    #run_camera_test()
+    # tts_test()
+    run_camera_test()
 
-    letterString = ""
+    # letterString = ""
+    # print("Before")
+    # timer.sleeper()
+    # print("After")
 
     #init()
 
