@@ -142,8 +142,8 @@ def main():
                 # Testing to get threshold
                 gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
                 blur = cv2.GaussianBlur(gray, (7, 7), 0)
-                invert = cv2.bitwise_not(blur)
-                ret, roi = cv2.threshold(invert, thresholdValue, 255, cv2.THRESH_BINARY)
+                #invert = cv2.bitwise_not(blur)
+                ret, roi = cv2.threshold(blur, thresholdValue, 255, cv2.THRESH_BINARY)
 
 
                 roi = resize.normalize_image_size(roi)#500 by 500
