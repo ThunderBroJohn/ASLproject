@@ -5,6 +5,8 @@
 import numpy as np
 import cv2 #openCV
 
+# Lots of this code was inspired by: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
+
 hand_hist = None
 is_hand_hist_created = False
 traverse_point = []
