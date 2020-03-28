@@ -171,7 +171,8 @@ def main():
             letterString = "" #reset
             key = None
         if key and key == ord('s'): #speak
-            speak(letterString)
+            if(letterString != ""):
+                speak(letterString)
             letterString = "" #reset
             key = None
         if key and key == ord('q'): #quit
