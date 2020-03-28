@@ -169,10 +169,11 @@ def main():
             closestLetter = None
 
             #TODO change Frame from color to Soble
+
             # yeah, I know this is stupidly simple to the point that it might not be a good idea/ or work
             # but the idea is that you take the frame, (resize it and the item in alphabetList) and you do
             # the image_compare with each item in the alphabetList. whichever has the least difference, it
-            # will print that letter
+            # will print that letter.
 
             for item in alphabetList:
                 pic = item[0]
