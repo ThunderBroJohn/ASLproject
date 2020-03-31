@@ -6,8 +6,6 @@ import numpy as np
 import cv2 #openCV
 import enum
 
-# Lots of this code was inspired by: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
-
 class SquareLocation(enum.Enum):
     Left = 1
     Center = 2
@@ -16,6 +14,7 @@ class SquareLocation(enum.Enum):
 useTracking = False
 square_location = SquareLocation.Left
 
+# This code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 hand_hist = None
 is_hand_hist_created = False
 traverse_point = []
@@ -26,11 +25,13 @@ hand_rect_one_y = None
 hand_rect_two_x = None
 hand_rect_two_y = None
 
+# This code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def rescale_frame(frame, wpercent=130, hpercent=130):
     width = int(frame.shape[1] * wpercent / 100)
     height = int(frame.shape[0] * hpercent / 100)
     return cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
 
+# This code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def draw_rect(frame):
     rows, cols, _ = frame.shape
     global total_rectangle, hand_rect_one_x, hand_rect_one_y, hand_rect_two_x, hand_rect_two_y
@@ -53,7 +54,7 @@ def draw_rect(frame):
 
     return frame
 
-
+# This code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def hand_histogram(frame):
     global hand_rect_one_x, hand_rect_one_y
 
@@ -67,7 +68,7 @@ def hand_histogram(frame):
     hand_hist = cv2.calcHist([roi], [0, 1], None, [180, 256], [0, 180, 0, 256])
     return cv2.normalize(hand_hist, hand_hist, 0, 255, cv2.NORM_MINMAX)
 
-
+# Some of this code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def hist_masking(frame, hist):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -248,7 +249,7 @@ def extract_roi(frame):
 
     return frame, roi
 
-
+# Some of this code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def main():
     global hand_hist
     global is_hand_hist_created
