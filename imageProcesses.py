@@ -72,3 +72,40 @@ def automatic_brightness_and_contrast(image, clip_hist_percent=1):
 
     auto_result = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
     return (auto_result, alpha, beta)
+
+#referencing https://sandipanweb.wordpress.com/2017/10/22/feature-detection-with-harris-corner-detector-and-matching-images-with-feature-descriptors-in-python/
+def get_descriptor(I, X, Y):
+    pass
+
+# https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
+def compute_harris_corner(grayimage, threashold=10**(-4)): #GRAY IMAGES
+    #1computer gradient and matrix R to store corner strengths?
+    gray = np.float32(grayimage)
+    dst = cv2.cornerHarris(gray,2,3,0,0.4)
+    dst = cv2.dilate(dst,None)
+    #2 threshold gets rid of weak features
+    ret, dst = cv2.threshold(dst,0.01*dst.max(),255,0)
+    dst = np.uint8(dst)
+    #3 non-maximum suppresion to compute local maximum of features and discard others
+    #find centeroids
+    ret, lables, stats, centeroids = cv2.connectedComponentsWithStats(dst)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER,100,0.001)
+    corners = cv2.cornerSubPix(gray,np.float32(centeroids),(5,5),(-1,-1),criteria)
+
+    return centeroids, corners
+    # Now draw them
+    #res = np.hstack((centroids,corners))
+    #res = np.int0(res)
+    #img[res[:,1],res[:,0]]=[0,0,255] #RED
+    #img[res[:,3],res[:,2]] = [0,255,0] #GREEN
+    
+    #4 compute discriptors for remaning with get_descriptor
+
+def abs_distance_matching(feature1, feature2, threshold=50):
+    #this function is used to compute the sum of absolute distance between features
+    #Matching features should be in the same aproximate locations
+    pass
+
+def compute_matches(image1, image2):
+    #used to compute matches between images. return highest fedelity match
+    pass
