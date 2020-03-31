@@ -190,6 +190,12 @@ def main():
         if key and key == ord('r'): #recalibrate
             regionOfInterest.calibrate(frame)
             key = None
+        if key and key == ord('t'): #recalibrate
+            regionOfInterest.toggle_tracking()
+            key = None
+        if key and key == ord('l'): #recalibrate
+            regionOfInterest.switch_square_location()
+            key = None
         if key and key == ord('c'): #clear
             letterString = "" #reset
             key = None

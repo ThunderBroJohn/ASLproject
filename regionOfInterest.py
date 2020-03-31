@@ -4,8 +4,17 @@
 #imports
 import numpy as np
 import cv2 #openCV
+import enum
 
 # Lots of this code was inspired by: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
+
+class SquareLocation(enum.Enum):
+    Left = 1
+    Center = 2
+    Right = 3
+
+useTracking = False
+square_location = SquareLocation.Left
 
 hand_hist = None
 is_hand_hist_created = False
@@ -160,23 +169,85 @@ def hist_masking(frame, hist):
 
     return frame, roi
 
-def calibrate(frame):
-    global is_hand_hist_created, hand_hist
-    if is_hand_hist_created:
-        is_hand_hist_created = False
-    else:
-        is_hand_hist_created = True
-        hand_hist = hand_histogram(frame)
 
-def extract_roi(frame):
-    global is_hand_hist_created, hand_hist
-    if is_hand_hist_created:
-        frame, roi = hist_masking(frame, hand_hist)
+def square_roi(frame):
+    global square_location
+    fh, fw, _ = frame.shape
+    rh = fh // 2
+    rw = fw // 3
+    if (square_location == SquareLocation.Right):
+        x = 10
+    elif (square_location == SquareLocation.Left):
+        x = fw - 10 - rw
     else:
-        frame = draw_rect(frame)
-        roi = None
+        x = (fw // 2) - (rw // 2)
+    y = (fh // 2) - (rh // 2)
+    roi = np.zeros((rh, rw, 3), dtype=np.uint8)
+    roi = frame[y:y+rh, x:x+rw]
+
+    # Draw rectangle to show user where ROI is located on screen
+    cv2.rectangle(frame, (x, y), (x+rw, y+rh), (255, 0, 0), 2)
 
     return frame, roi
+
+
+def calibrate(frame):
+    global useTracking
+    if (useTracking):
+        global is_hand_hist_created, hand_hist
+        if is_hand_hist_created:
+            is_hand_hist_created = False
+        else:
+            is_hand_hist_created = True
+            hand_hist = hand_histogram(frame)
+    return
+
+
+def get_use_tracking():
+    global useTracking
+    return useTracking
+
+
+def set_use_tracking(newUseTracking):
+    global useTracking
+    useTracking = newUseTracking
+    return
+
+
+def toggle_tracking():
+    global useTracking
+    if (useTracking):
+        useTracking = False
+    else:
+        useTracking = True
+    return
+
+
+def switch_square_location():
+    global square_location
+    if (square_location == SquareLocation.Left):
+        square_location = SquareLocation.Center
+    elif (square_location == SquareLocation.Center):
+        square_location = SquareLocation.Right
+    elif (square_location == SquareLocation.Right):
+        square_location = SquareLocation.Left
+    return
+
+
+def extract_roi(frame):
+    global useTracking
+    if (useTracking):
+        global is_hand_hist_created, hand_hist
+        if is_hand_hist_created:
+            frame, roi = hist_masking(frame, hand_hist)
+        else:
+            frame = draw_rect(frame)
+            roi = None
+    else:
+        frame, roi = square_roi(frame)
+
+    return frame, roi
+
 
 def main():
     global hand_hist
