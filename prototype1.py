@@ -10,6 +10,7 @@ import cv2 #openCV
 import regionOfInterest
 import resize
 import imageProcesses
+#import imageCompare
 
 #initialize Text to speach
 engine = pyttsx3.init()
@@ -76,10 +77,8 @@ def speak(talkToMe):
 This function will take in an image and compare it to
 a small file based data set of ASL symbols, and return 
 what letter it is.
-
 IF lookForLetter is false, we will wait for it to be true
 before looking for the next letter.
-
 returns letter (and lookForLetter to false if found? (Look reset))
 """
     
@@ -102,7 +101,6 @@ def translateSymbol(frame, lookForLetter, alphabetList):
         diff2 = image_compare(frame,cv2.flip(letter[0],1))
         if(diff2 < diff):
             diff = diff2 #take the better comparison of left or right
-
         if(diff < temp[0]):
             temp = [diff, letter[1]]
     #if(temp[0] > minMatch):#??? working on this logic
@@ -118,6 +116,8 @@ def main():
     #string for use in output
     letterString = "test"
     lookForLetter = True
+    saveRoi = False
+    thresholdValue = 160
 
     #capture computer camera
     cap = cv2.VideoCapture(0)
@@ -133,10 +133,30 @@ def main():
             #Get Region of Interest
             frame, roi = regionOfInterest.extract_roi(frame)
             if (roi is not None):
-                roi = imageProcesses.sobel_gradient_edge(roi)
+                # roi = imageProcesses.sobel_gradient_edge(roi)
+
+
+                # Testing to get threshold
+                gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+                blur = cv2.GaussianBlur(gray, (7, 7), 0)
+                #invert = cv2.bitwise_not(blur)
+                ret, roi = cv2.threshold(blur, thresholdValue, 255, cv2.THRESH_BINARY)
+
+
                 roi = resize.normalize_image_size(roi)#500 by 500
-                cv2.imshow("ROI",roi)
-                print("I made it")
+                cv2.imshow("ROI", roi)
+                #letter, percent = imageCompare.compareToLibrary(roi)
+
+                #if (letter is not None and percent > 70.0):
+                #    print(f"{letter} : {percent:0.2f} %")
+                #elif (letter is not None and percent > 0.0):
+                #    print(f"Maybe {letter} : {percent:0.2f} %")
+                #else:
+                #    print("No match")
+
+                #if (saveRoi):
+                #    cv2.imwrite("roi.png", roi)
+                #    saveRoi = False
 
             #If look for letter is false show output but
             # don't look for new letter until timer resets
@@ -167,13 +187,29 @@ def main():
         if key and key == ord('r'): #recalibrate
             regionOfInterest.calibrate(frame)
             key = None
+        if key and key == ord('t'): #recalibrate
+            regionOfInterest.toggle_tracking()
+            key = None
+        if key and key == ord('l'): #recalibrate
+            regionOfInterest.switch_square_location()
+            key = None
         if key and key == ord('c'): #clear
             letterString = "" #reset
             key = None
         if key and key == ord('s'): #speak
-            if(letterString != ""):
-                speak(letterString)
+            speak(letterString)
             letterString = "" #reset
+            key = None
+        if key and key == ord('-'): #speak
+            if (thresholdValue > 5):
+                thresholdValue -= 5
+            key = None
+        if key and key == ord('='): #speak
+            if (thresholdValue < 250):
+                thresholdValue += 5
+            key = None
+        if key and key == ord('p'): #speak
+            saveRoi = True
             key = None
         if key and key == ord('q'): #quit
             key = None
@@ -185,4 +221,3 @@ def main():
 #run main
 if __name__ == "__main__":
     main()
-

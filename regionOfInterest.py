@@ -4,7 +4,17 @@
 #imports
 import numpy as np
 import cv2 #openCV
+import enum
 
+class SquareLocation(enum.Enum):
+    Left = 1
+    Center = 2
+    Right = 3
+
+useTracking = False
+square_location = SquareLocation.Left
+
+# This code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 hand_hist = None
 is_hand_hist_created = False
 traverse_point = []
@@ -15,11 +25,13 @@ hand_rect_one_y = None
 hand_rect_two_x = None
 hand_rect_two_y = None
 
+# This code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def rescale_frame(frame, wpercent=130, hpercent=130):
     width = int(frame.shape[1] * wpercent / 100)
     height = int(frame.shape[0] * hpercent / 100)
     return cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
 
+# This code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def draw_rect(frame):
     rows, cols, _ = frame.shape
     global total_rectangle, hand_rect_one_x, hand_rect_one_y, hand_rect_two_x, hand_rect_two_y
@@ -42,7 +54,7 @@ def draw_rect(frame):
 
     return frame
 
-
+# This code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def hand_histogram(frame):
     global hand_rect_one_x, hand_rect_one_y
 
@@ -56,7 +68,7 @@ def hand_histogram(frame):
     hand_hist = cv2.calcHist([roi], [0, 1], None, [180, 256], [0, 180, 0, 256])
     return cv2.normalize(hand_hist, hand_hist, 0, 255, cv2.NORM_MINMAX)
 
-
+# Some of this code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def hist_masking(frame, hist):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -119,6 +131,33 @@ def hist_masking(frame, hist):
     # mask = cv2.merge((mask, mask, mask))
     # final = cv2.bitwise_and(frame, mask)
 
+    # Adding extra size to ROI to ensure whole hand is captured
+    size_to_add = 50
+
+    if (top is not None):
+        if (top - size_to_add < 0):
+            top = 0
+        else:
+            top -= size_to_add
+
+    if (bottom is not None):
+        if (bottom + size_to_add > len(sumrows)):
+            bottom = len(sumrows)
+        else:
+            bottom += size_to_add
+
+    if (left is not None):
+        if (left - size_to_add < 0):
+            left = 0
+        else:
+            left -= size_to_add
+
+    if (right is not None):
+        if (right + size_to_add > len(sumcols)):
+            right = len(sumcols)
+        else:
+            right += size_to_add
+
     # This portion will keep only the Region of Interest
     # roi = None
     roi = np.zeros((500, 500, 3), dtype=np.uint8)
@@ -131,24 +170,86 @@ def hist_masking(frame, hist):
 
     return frame, roi
 
-def calibrate(frame):
-    global is_hand_hist_created, hand_hist
-    if is_hand_hist_created:
-        is_hand_hist_created = False
-    else:
-        is_hand_hist_created = True
-        hand_hist = hand_histogram(frame)
 
-def extract_roi(frame):
-    global is_hand_hist_created, hand_hist
-    if is_hand_hist_created:
-        frame, roi = hist_masking(frame, hand_hist)
+def square_roi(frame):
+    global square_location
+    fh, fw, _ = frame.shape
+    rh = fh // 2
+    rw = fw // 3
+    if (square_location == SquareLocation.Right):
+        x = 10
+    elif (square_location == SquareLocation.Left):
+        x = fw - 10 - rw
     else:
-        frame = draw_rect(frame)
-        roi = None
+        x = (fw // 2) - (rw // 2)
+    y = (fh // 2) - (rh // 2)
+    roi = np.zeros((rh, rw, 3), dtype=np.uint8)
+    roi = frame[y:y+rh, x:x+rw]
+
+    # Draw rectangle to show user where ROI is located on screen
+    cv2.rectangle(frame, (x, y), (x+rw, y+rh), (255, 0, 0), 2)
 
     return frame, roi
 
+
+def calibrate(frame):
+    global useTracking
+    if (useTracking):
+        global is_hand_hist_created, hand_hist
+        if is_hand_hist_created:
+            is_hand_hist_created = False
+        else:
+            is_hand_hist_created = True
+            hand_hist = hand_histogram(frame)
+    return
+
+
+def get_use_tracking():
+    global useTracking
+    return useTracking
+
+
+def set_use_tracking(newUseTracking):
+    global useTracking
+    useTracking = newUseTracking
+    return
+
+
+def toggle_tracking():
+    global useTracking
+    if (useTracking):
+        useTracking = False
+    else:
+        useTracking = True
+    return
+
+
+def switch_square_location():
+    global square_location
+    if (square_location == SquareLocation.Left):
+        square_location = SquareLocation.Center
+    elif (square_location == SquareLocation.Center):
+        square_location = SquareLocation.Right
+    elif (square_location == SquareLocation.Right):
+        square_location = SquareLocation.Left
+    return
+
+
+def extract_roi(frame):
+    global useTracking
+    if (useTracking):
+        global is_hand_hist_created, hand_hist
+        if is_hand_hist_created:
+            frame, roi = hist_masking(frame, hand_hist)
+        else:
+            frame = draw_rect(frame)
+            roi = None
+    else:
+        frame, roi = square_roi(frame)
+
+    return frame, roi
+
+# Some of this code was inspired from: https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m
 def main():
     global hand_hist
     global is_hand_hist_created

@@ -8,104 +8,128 @@ import cv2 #openCV
 #import resize
 import imageProcesses
 
+def initialize_comparison_library():
+    #abc... and bs(backspace) and space
+    alphabetList = [(cv2.imread("ASLproject/ASLproject/edgePreprocess/a1.png", 0), "a")]
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png", 0),"b"]))
 
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c1.png", 0),"c"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c2.png", 0),"c"]))
 
-"""
-img = image1
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/d1.png", 0),"d"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/e1.png", 0),"e"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/f1.png", 0),"f"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/g1.png", 0),"g"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/h1.png", 0),"h"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/i1.png", 0),"i"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/j1.png", 0),"j"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/k1.png", 0),"k"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/l1.png", 0),"l"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/m1.png", 0),"m"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/n1.png", 0),"n"]))
 
-# Initiate STAR detector
-orb = cv2.ORB_create()
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o1.png", 0),"o"]))
+    #alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o2.png", 0),"o"]))
 
-# find the keypoints with ORB
-kp = orb.detect(img,None)
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/p1.png", 0),"p"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/q1.png", 0),"q"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/r1.png", 0),"r"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/s1.png", 0),"s"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/t1.png", 0),"t"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/u1.png", 0),"u"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/v1.png", 0),"v"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/w1.png", 0),"w"]))
 
-# compute the descriptors with ORB
-kp, des = orb.compute(img, kp)
-print(kp)
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0),"x"]))
+    #alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/x2.png", 0),"x"]))
 
-# draw only keypoints location,not size and orientation
-img2 = cv2.drawKeypoints(img,kp,color=(0,255,0), flags=0)
-plt.imshow(img2)
-plt.show()
-"""
-"""
-# Initiate SIFT detector
-sift = cv2.SIFT()
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/y1.png", 0),"y"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/z1.png", 0),"z"]))
 
-# find the keypoints and descriptors with SIFT
-kp1, des1 = sift.detectAndCompute(image1,None)
-kp2, des2 = sift.detectAndCompute(image2,None)
-
-# BFMatcher with default params
-bf = cv2.BFMatcher()
-matches = bf.knnMatch(des1,des2, k=2)
-
-# Apply ratio test
-good = []
-for m,n in matches:
-    if m.distance < 0.75*n.distance:
-        good.append([m])
-
-# cv2.drawMatchesKnn expects list of lists as matches.
-img3 = cv2.drawMatchesKnn(image1,kp1,image2,kp2,good,flags=2)
-
-plt.imshow(img3),plt.show()
-
-
-"""
-image1 = cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0)
-image2 = cv2.imread("ASLproject/ASLproject/edgePreprocess/x2.png", 0)
-
-#cv2.ORB
-orb = cv2.ORB_create()
-
-#image = cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0)
-#image2 = cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0)
-print("step0")
-#cv2.imshow("test",image) 
-#cv2.waitKey(0)
-
-kp1 = orb.detect(image1,None)
-kp2 = orb.detect(image2,None)
-print("step1")
-kp1, des1 = orb.compute(image1, kp1)
-kp2, des2 = orb.compute(image2, kp2)
-print("step2")
-img1 = cv2.drawKeypoints(image1, kp1, image1, color=(0,255,0), flags=0)
-img2 = cv2.drawKeypoints(image2, kp2, image2, color=(0,255,0), flags=0)
-print("step3")
-
-#numpy_horizontal = np.hstack((img1, img2))
-#cv2.imshow("test",numpy_horizontal)
-#cv
-
-cv2.imshow("test",img1)
-cv2.waitKey(0)
-cv2.imshow("test",img2)
-cv2.waitKey(0)
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/_1.png", 0),"_"]))#space or _
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/bs1.png", 0),"bs"]))
+    #test = "alphabetList loaded with " + str(len(alphabetList)) + " items"
+    #print(test)
+    #print(alphabetList[0][1])#a
+    return alphabetList
 
 
 
-# BFMatcher with default params
-bf = cv2.BFMatcher()
-matches = bf.knnMatch(des1,des2, k=2)
+def compare_images(image1,image2,distanceThreshold=0.85):
+    #cv2.ORB
+    orb = cv2.ORB_create()
+
+    kp1 = orb.detect(image1,None)
+    kp2 = orb.detect(image2,None)
+
+    kp1, des1 = orb.compute(image1, kp1)
+    kp2, des2 = orb.compute(image2, kp2)
+
+    #testing
+    #img1 = cv2.drawKeypoints(image1, kp1, image1, color=(0,255,0), flags=0)
+    #img2 = cv2.drawKeypoints(image2, kp2, image2, color=(0,255,0), flags=0)
+    #cv2.imshow("test",img1)
+    #cv2.waitKey(0)
+    #cv2.imshow("test",img2)
+    #cv2.waitKey(0)
+
+    # BFMatcher with default params
+    bf = cv2.BFMatcher()
+    matches = bf.knnMatch(des1,des2, k=2)
+
+    # Apply ratio test
+    good = []
+    bad = []
+    for m,n in matches:
+        if(m.distance < distanceThreshold*n.distance):#.75*n
+            good.append([m])
+        else:
+            bad.append([m])
+
+    #testing
+    #print(len(good))
+    #print(len(bad))
+    percent_match = len(good)/(len(good)+len(bad))
+    #print(percent_match)
+    
+    return percent_match
 
 
+def find_match(alphabetList,image):
+    mirrorImage = cv2.flip(image, 1)
 
-
-# Apply ratio test
-good = []
-bad = []
-for m,n in matches:
-    if(m.distance < 0.85*n.distance):#.75*n
-        good.append([m])
+    bestMatch = 0
+    temp1 = 0
+    temp2 = 0
+    letterGuess = ""
+    for testLetter in alphabetList:
+        temp1 = compare_images(testLetter[0],image)
+        temp2 = compare_images(testLetter[0],mirrorImage)
+        if(temp1 > temp2):
+            if(bestMatch < temp1):
+                bestMatch = temp1
+                letterGuess = testLetter[1]
+        else:
+            if(bestMatch < temp2):
+                bestMatch = temp2
+                letterGuess = testLetter[1]
+        test = str(bestMatch) + ", " + letterGuess
+        print(bestMatch)
+    if(bestMatch > 0.10):
+        return letterGuess
     else:
-        bad.append([m])
+        return ""
+    
+alphabetList = initialize_comparison_library()
 
-print(len(good))
-print(len(bad))
-percent_match = len(good)/(len(good)+len(bad))
-print(percent_match)
+#image1 = cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0)
+#image2 = cv2.imread("ASLproject/ASLproject/edgePreprocess/x2.png", 0)
+
+testImage = cv2.imread("ASLproject/ASLproject/edgePreprocess/o2.png")
+
+testResults = find_match(alphabetList,testImage)
+print(testResults)
+
 
 
 # cv2.drawMatchesKnn expects list of lists as matches.
