@@ -73,9 +73,6 @@ def automatic_brightness_and_contrast(image, clip_hist_percent=1):
     auto_result = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
     return (auto_result, alpha, beta)
 
-#referencing https://sandipanweb.wordpress.com/2017/10/22/feature-detection-with-harris-corner-detector-and-matching-images-with-feature-descriptors-in-python/
-def get_descriptor(I, X, Y):
-    pass
 
 # https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
 def compute_harris_corner(grayimage, threashold=10**(-4)): #GRAY IMAGES
@@ -101,11 +98,165 @@ def compute_harris_corner(grayimage, threashold=10**(-4)): #GRAY IMAGES
     
     #4 compute discriptors for remaning with get_descriptor
 
-def abs_distance_matching(feature1, feature2, threshold=50):
-    #this function is used to compute the sum of absolute distance between features
-    #Matching features should be in the same aproximate locations
-    pass
+def compare_images(image1,image2,distanceThreshold=0.85):
+    #cv2.ORB
+    orb = cv2.ORB_create()
 
-def compute_matches(image1, image2):
-    #used to compute matches between images. return highest fedelity match
-    pass
+    kp1 = orb.detect(image1,None)
+    kp2 = orb.detect(image2,None)
+
+    kp1, des1 = orb.compute(image1, kp1)
+    kp2, des2 = orb.compute(image2, kp2)
+
+    #testing
+    #img1 = cv2.drawKeypoints(image1, kp1, image1, color=(0,255,0), flags=0)
+    #img2 = cv2.drawKeypoints(image2, kp2, image2, color=(0,255,0), flags=0)
+    #cv2.imshow("test",img1)
+    #cv2.waitKey(0)
+    #cv2.imshow("test",img2)
+    #cv2.waitKey(0)
+
+    # BFMatcher with default params
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
+    matches = bf.knnMatch(des1,des2, k=2)
+    #kp1, kp2, matches = findMatchesBetweenImages(image1,image2)
+
+    # Apply ratio test
+    good = []
+    bad = []
+    for m,n in matches:
+        #print("M, N distance ", m.distance, n.distance)
+        if(m.distance < 100):
+            if(m.distance < distanceThreshold*n.distance):#.75*n
+                good.append([m])
+            else:   
+                bad.append([m])
+        else:
+            bad.append([m])
+
+
+    #testing
+    #print(len(good))
+    #print(len(bad))
+    percent_match = len(good)/(len(good)+len(bad))
+    #print(percent_match)
+    
+    return percent_match
+
+
+def find_match(alphabetList,image,distanceThreshold=0.85):
+    mirrorImage = cv2.flip(image, 1)
+
+    bestMatch = 0
+    temp1 = 0
+    temp2 = 0
+    letterGuess = ""
+    for testLetter in alphabetList:
+        temp1 = compare_images(testLetter[0],image,distanceThreshold)
+        temp2 = compare_images(testLetter[0],mirrorImage,distanceThreshold)
+        if(temp1 > temp2):
+            if(bestMatch < temp1):
+                bestMatch = temp1
+                letterGuess = testLetter[1]
+        else:
+            if(bestMatch < temp2):
+                bestMatch = temp2
+                letterGuess = testLetter[1]
+        #test = str(bestMatch) + ", " + letterGuess
+        #print(test)
+    if(bestMatch > 0.10):
+        return letterGuess
+    else:
+        return ""
+
+#This function pulls preproccessed images for use in comparison
+def initialize_comparison_library_sobel():
+    #abc... and bs(backspace) and space
+    alphabetList = [(cv2.imread("ASLproject/ASLproject/edgePreprocess/a1.png", 0), "a")]
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png", 0),"b"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c1.png", 0),"c"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c2.png", 0),"c"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/d1.png", 0),"d"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/e1.png", 0),"e"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/f1.png", 0),"f"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/g1.png", 0),"g"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/h1.png", 0),"h"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/i1.png", 0),"i"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/j1.png", 0),"j"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/k1.png", 0),"k"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/l1.png", 0),"l"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/m1.png", 0),"m"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/n1.png", 0),"n"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o1.png", 0),"o"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o2.png", 0),"o"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/p1.png", 0),"p"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/q1.png", 0),"q"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/r1.png", 0),"r"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/s1.png", 0),"s"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/t1.png", 0),"t"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/u1.png", 0),"u"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/v1.png", 0),"v"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/w1.png", 0),"w"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0),"x"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/x2.png", 0),"x"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/y1.png", 0),"y"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/z1.png", 0),"z"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/_1.png", 0)," "]))#space or _
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/bs1.png", 0),"bs"]))
+    #test = "alphabetList loaded with " + str(len(alphabetList)) + " items"
+    #print(test)
+    #print(alphabetList[0][1])#a
+    return alphabetList
+
+#This function pulls preproccessed images for use in comparison
+def initialize_comparison_library_BandW():
+    #abc... and bs(backspace) and space
+    alphabetList = [(cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/a1.png", 0), "a")]
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/b1.png", 0),"b"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/c1.png", 0),"c"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/c2.png", 0),"c"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/d1.png", 0),"d"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/e1.png", 0),"e"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/f1.png", 0),"f"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/g1.png", 0),"g"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/h1.png", 0),"h"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/i1.png", 0),"i"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/j1.png", 0),"j"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/k1.png", 0),"k"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/l1.png", 0),"l"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/m1.png", 0),"m"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/n1.png", 0),"n"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/o1.png", 0),"o"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/o2.png", 0),"o"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/p1.png", 0),"p"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/q1.png", 0),"q"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/r1.png", 0),"r"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/s1.png", 0),"s"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/t1.png", 0),"t"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/u1.png", 0),"u"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/v1.png", 0),"v"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/w1.png", 0),"w"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/x1.png", 0),"x"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/x2.png", 0),"x"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/y1.png", 0),"y"]))
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/z1.png", 0),"z"]))
+
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/_1.png", 0)," "]))#space or _
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/bs1.png", 0),"bs"]))
+    #test = "alphabetList loaded with " + str(len(alphabetList)) + " items"
+    #print(test)
+    #print(alphabetList[0][1])#a
+    return alphabetList

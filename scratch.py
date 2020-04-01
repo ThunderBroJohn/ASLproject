@@ -53,6 +53,58 @@ def initialize_comparison_library():
     #print(alphabetList[0][1])#a
     return alphabetList
 
+def findMatchesBetweenImages(image_1, image_2, nf=500, sf=1.2, wta=2, st=cv2.ORB_HARRIS_SCORE, ps=31):
+    matches = None       # type: list of cv2.DMath
+    image_1_kp = None    # type: list of cv2.KeyPoint items
+    image_1_desc = None  # type: numpy.ndarray of numpy.uint8 values.
+    image_2_kp = None    # type: list of cv2.KeyPoint items.
+    image_2_desc = None  # type: numpy.ndarray of numpy.uint8 values.
+
+    orb = cv2.ORB_create(nfeatures=nf, scaleFactor=sf, WTA_K=wta, scoreType=st, patchSize=ps)
+
+    # START ******************************************************
+    # solve for rotation, scale, lighting
+
+    # orb reference https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_orb/py_orb.html#orb
+    #initiate ORB detector
+    #orb = cv2.ORB()
+
+    #to gray
+    #image_1_gray = cv2.cvtColor(image_1,cv2.COLOR_BGR2GRAY)
+    #image_2_gray = cv2.cvtColor(image_2,cv2.COLOR_BGR2GRAY)
+
+    #could have blur
+
+    #find keypoints
+    image_1_kp = orb.detect(image_1,None)
+    image_2_kp = orb.detect(image_2,None)
+
+    #compute the descriptors
+    image_1_kp, image_1_desc = orb.compute(image_1, image_1_kp)
+    image_2_kp, image_2_desc = orb.compute(image_2, image_2_kp)
+
+    #compute matches
+    #referenced https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_matcher/py_matcher.html#matcher
+    # create BFMatcher object
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+
+    # Match descriptors.
+    matches = bf.match(image_1_desc,image_2_desc)
+
+    # Sort them in the order of their distance.
+    matches = sorted(matches, key = lambda x:x.distance)
+
+    # Draw first 10 matches.
+    #img3 = cv2.drawMatches(image_1,image_1_kp,image_2,image_2_kp,matches[:10], flags=2)
+    #plt.imshow(img3),plt.show()
+
+
+    # END ********************************************************
+
+    # I coded the return statement for you. You are free to modify it -- just
+    # make sure the tests pass.
+    return image_1_kp, image_2_kp, matches#[:15]
+
 
 
 def compare_images(image1,image2,distanceThreshold=0.85):
@@ -74,21 +126,27 @@ def compare_images(image1,image2,distanceThreshold=0.85):
     #cv2.waitKey(0)
 
     # BFMatcher with default params
-    bf = cv2.BFMatcher()
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
     matches = bf.knnMatch(des1,des2, k=2)
+    #kp1, kp2, matches = findMatchesBetweenImages(image1,image2)
 
     # Apply ratio test
     good = []
     bad = []
     for m,n in matches:
-        if(m.distance < distanceThreshold*n.distance):#.75*n
-            good.append([m])
+        #print("M, N distance ", m.distance, n.distance)
+        if(m.distance < 100):
+            if(m.distance < distanceThreshold*n.distance):#.75*n
+                good.append([m])
+            else:   
+                bad.append([m])
         else:
             bad.append([m])
 
+
     #testing
-    #print(len(good))
-    #print(len(bad))
+    print(len(good))
+    print(len(bad))
     percent_match = len(good)/(len(good)+len(bad))
     #print(percent_match)
     
@@ -114,7 +172,7 @@ def find_match(alphabetList,image):
                 bestMatch = temp2
                 letterGuess = testLetter[1]
         test = str(bestMatch) + ", " + letterGuess
-        print(bestMatch)
+        print(test)
     if(bestMatch > 0.10):
         return letterGuess
     else:
@@ -125,17 +183,17 @@ alphabetList = initialize_comparison_library()
 #image1 = cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0)
 #image2 = cv2.imread("ASLproject/ASLproject/edgePreprocess/x2.png", 0)
 
-testImage = cv2.imread("ASLproject/ASLproject/edgePreprocess/o2.png")
+testImage = cv2.imread("ASLproject/ASLproject/edgePreprocess/o2.png", 0)
 
 testResults = find_match(alphabetList,testImage)
 print(testResults)
-
-
 
 # cv2.drawMatchesKnn expects list of lists as matches.
 #img3 = image1
 #img3 = cv2.drawMatchesKnn(image1,kp1,image2,kp2,good,image1,flags=2)
 #cv2.imshow("testout",img3)
+#img3 = cv2.drawMatches(image_1,image_1_kp,image_2,image_2_kp,matches[:10], flags=2)
+    #plt.imshow(img3),plt.show()
 
 #print(kp1, kp2)
 
