@@ -56,6 +56,7 @@ def main():
     delayTimerDuration = 20
     delayTimer = delayTimerDuration
     matchList = []
+    frameCounter = 0
 
     # Capture camera
     cap = cv2.VideoCapture(0)
@@ -81,18 +82,19 @@ def main():
                 roi = resize.normalize_image_size(roi)
                 cv2.imshow("ROI", roi)
 
-                # Get letter and match percentage
-                tempLetter, tempPercent = imageCompare.compareToLibrary(roi)
+                if (frameCounter > 5):
+                    # Get letter and match percentage
+                    tempLetter, tempPercent = imageCompare.compareToLibrary(roi)
 
-                # Append results to list
-                if (tempLetter is not None and tempPercent > 0.0):
-                    matchList.append((tempLetter, tempPercent))
+                    # Append results to list
+                    if (tempLetter is not None and tempPercent > 0.0):
+                        matchList.append((tempLetter, tempPercent))
 
-                # Debug log
-                if (tempLetter is not None and tempPercent > 0.0):
-                    print(f"{tempLetter} : {tempPercent:0.2f} %")
-                else:
-                    print("No match")
+                    # Debug log
+                    if (tempLetter is not None and tempPercent > 0.0):
+                        print(f"{tempLetter} : {tempPercent:0.2f} %")
+                    else:
+                        print("No match")
 
             # Draw text onto frame
             frame = imageProcesses.draw_text(frame, letterString, (10, 40))
