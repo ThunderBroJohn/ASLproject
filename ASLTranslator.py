@@ -95,6 +95,8 @@ def main():
                         print(f"{tempLetter} : {tempPercent:0.2f} %")
                     else:
                         print("No match")
+                else:
+                    frameCounter += 1
 
             # Draw text onto frame
             frame = imageProcesses.draw_text(frame, letterString, (10, 40))
