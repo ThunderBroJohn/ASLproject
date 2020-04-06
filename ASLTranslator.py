@@ -116,6 +116,14 @@ def main():
             letter = most_likely_match(matchList)
             delayTimer = delayTimerDuration
 
+        # Recalibrate hand tracking
+        if key and key == ord('r'):
+            regionOfInterest.calibrate(frame)
+            key = None
+        # Toggle hand tracking
+        if key and key == ord('t'):
+            regionOfInterest.toggle_tracking()
+            key = None
         # Switch roi location
         if key and key == ord('l'):
             regionOfInterest.switch_square_location()
