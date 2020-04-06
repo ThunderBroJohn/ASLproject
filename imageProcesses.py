@@ -35,8 +35,6 @@ def sobel_gradient_edge(image, blur=(5,5)):
     grad = cv2.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0)
     return grad
 
-    
-
 #funciton from https://stackoverflow.com/questions/56905592/automatic-contrast-and-brightness-adjustment-of-a-color-photo-of-a-sheet-of-pape
 def automatic_brightness_and_contrast(image, clip_hist_percent=1):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -72,7 +70,6 @@ def automatic_brightness_and_contrast(image, clip_hist_percent=1):
 
     auto_result = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
     return (auto_result, alpha, beta)
-
 
 # https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
 def compute_harris_corner(grayimage, threashold=10**(-4)): #GRAY IMAGES
@@ -143,7 +140,6 @@ def compare_images(image1,image2,distanceThreshold=0.85):
     
     return percent_match
 
-
 def find_match(alphabetList,image,distanceThreshold=0.85):
     mirrorImage = cv2.flip(image, 1)
 
@@ -172,34 +168,47 @@ def find_match(alphabetList,image,distanceThreshold=0.85):
 #This function pulls preproccessed images for use in comparison
 def initialize_comparison_library_sobel():
     #abc... and bs(backspace) and space
-    alphabetList = [(cv2.imread("ASLproject/ASLproject/edgePreprocess/a1.png", 0), "a")]
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png", 0),"b"]))
+    #group 1 fist type a s t n m 
+    alphabetList = [(cv2.imread("ASLproject/ASLproject/edgePreprocess/a1.png", 0), "a")]      #0
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/m1.png", 0),"m"])) #1
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/n1.png", 0),"n"])) #2
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/s1.png", 0),"s"])) #3
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/t1.png", 0),"t"])) #4
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c1.png", 0),"c"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c2.png", 0),"c"]))
+    #group 2 side finger up shape d i r u
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/d1.png", 0),"d"])) #5
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/i1.png", 0),"i"])) #6
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/r1.png", 0),"r"])) #7
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/u1.png", 0),"u"])) #8
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/d1.png", 0),"d"]))
+    #group 3 circle type c o
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c1.png", 0),"c"])) #9
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/c2.png", 0),"c"])) #10
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o1.png", 0),"o"])) #11
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o2.png", 0),"o"])) #12
+
+    #group 4 pointing down types p q
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/p1.png", 0),"p"])) #13
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/q1.png", 0),"q"])) #14
+
+    #group 5 many fingers up
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/b1.png", 0),"b"])) #15
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/f1.png", 0),"f"])) #16
+
+    #group 6 sidewase point g h
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/g1.png", 0),"g"])) #17
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/h1.png", 0),"h"])) #18
+
+    #group 7 split fingers up v k
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/v1.png", 0),"v"])) #19
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/k1.png", 0),"k"])) #20
+
+    #group 8 unique shapes
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/e1.png", 0),"e"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/f1.png", 0),"f"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/g1.png", 0),"g"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/h1.png", 0),"h"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/i1.png", 0),"i"]))
+
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/j1.png", 0),"j"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/k1.png", 0),"k"]))
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/l1.png", 0),"l"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/m1.png", 0),"m"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/n1.png", 0),"n"]))
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o1.png", 0),"o"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/o2.png", 0),"o"]))
-
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/p1.png", 0),"p"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/q1.png", 0),"q"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/r1.png", 0),"r"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/s1.png", 0),"s"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/t1.png", 0),"t"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/u1.png", 0),"u"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/v1.png", 0),"v"]))
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/w1.png", 0),"w"]))
 
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/edgePreprocess/x1.png", 0),"x"]))
@@ -218,34 +227,47 @@ def initialize_comparison_library_sobel():
 #This function pulls preproccessed images for use in comparison
 def initialize_comparison_library_BandW():
     #abc... and bs(backspace) and space
-    alphabetList = [(cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/a1.png", 0), "a")]
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/b1.png", 0),"b"]))
+    #group 1 fist type a s t n m 
+    alphabetList = [(cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/a1.png", 0), "a")]      #0
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/m1.png", 0),"m"])) #1
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/n1.png", 0),"n"])) #2
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/s1.png", 0),"s"])) #3
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/t1.png", 0),"t"])) #4
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/c1.png", 0),"c"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/c2.png", 0),"c"]))
+    #group 2 side finger up shape d i r u
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/d1.png", 0),"d"])) #5
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/i1.png", 0),"i"])) #6
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/r1.png", 0),"r"])) #7
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/u1.png", 0),"u"])) #8
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/d1.png", 0),"d"]))
+    #group 3 circle type c o
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/c1.png", 0),"c"])) #9
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/c2.png", 0),"c"])) #10
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/o1.png", 0),"o"])) #11
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/o2.png", 0),"o"])) #12
+
+    #group 4 pointing down types p q
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/p1.png", 0),"p"])) #13
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/q1.png", 0),"q"])) #14
+
+    #group 5 many fingers up
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/b1.png", 0),"b"])) #15
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/f1.png", 0),"f"])) #16
+
+    #group 6 sidewase point g h
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/g1.png", 0),"g"])) #17
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/h1.png", 0),"h"])) #18
+
+    #group 7 split fingers up v k
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/v1.png", 0),"v"])) #19
+    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/k1.png", 0),"k"])) #20
+
+    #group 8 unique shapes
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/e1.png", 0),"e"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/f1.png", 0),"f"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/g1.png", 0),"g"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/h1.png", 0),"h"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/i1.png", 0),"i"]))
+
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/j1.png", 0),"j"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/k1.png", 0),"k"]))
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/l1.png", 0),"l"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/m1.png", 0),"m"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/n1.png", 0),"n"]))
 
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/o1.png", 0),"o"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/o2.png", 0),"o"]))
-
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/p1.png", 0),"p"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/q1.png", 0),"q"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/r1.png", 0),"r"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/s1.png", 0),"s"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/t1.png", 0),"t"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/u1.png", 0),"u"]))
-    alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/v1.png", 0),"v"]))
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/w1.png", 0),"w"]))
 
     alphabetList.append(([cv2.imread("ASLproject/ASLproject/preprocessedAlphabet/x1.png", 0),"x"]))
@@ -260,3 +282,158 @@ def initialize_comparison_library_BandW():
     #print(test)
     #print(alphabetList[0][1])#a
     return alphabetList
+
+def group_sorted_comparison(histROI,SobelROI,HistAlphabetList,SobelAlphabetList,distanceThreshold=0.85):
+    #step 1 use HistROI to pull best shape group
+    histMirrorROI = cv2.flip(histROI, 1)
+
+    bestMatch = 0
+    temp1 = 0
+    temp2 = 0
+
+    index = 0
+    for testLetter in HistAlphabetList:
+        temp1 = compare_images(testLetter[0],histROI,distanceThreshold)
+        temp2 = compare_images(testLetter[0],histMirrorROI,distanceThreshold)
+        if(temp1 > temp2):
+            if(bestMatch < temp1):
+                bestMatch = temp1
+                letterGuess = testLetter[1]
+        else:
+            if(bestMatch < temp2):
+                bestMatch = temp2
+                #letterGuess = testLetter[1]
+        index += 1
+    print(bestMatch)
+    if(bestMatch < 0.10):
+        return ""
+
+    letterGuess = ""
+    if(index < 5): #fist group a s t n m
+        for testLetter in SobelAlphabetList[0:5]:
+            temp1 = compare_images(testLetter[0],histROI,distanceThreshold)
+            temp2 = compare_images(testLetter[0],histMirrorROI,distanceThreshold)
+            if(temp1 > temp2):
+                if(bestMatch < temp1):
+                    bestMatch = temp1
+                    letterGuess = testLetter[1]
+            else:
+                if(bestMatch < temp2):
+                    bestMatch = temp2
+                    letterGuess = testLetter[1]
+    elif(index > 4 and index < 9): #side finger up group d i r u
+        for testLetter in SobelAlphabetList[5:9]:
+            temp1 = compare_images(testLetter[0],histROI,distanceThreshold)
+            temp2 = compare_images(testLetter[0],histMirrorROI,distanceThreshold)
+            if(temp1 > temp2):
+                if(bestMatch < temp1):
+                    bestMatch = temp1
+                    letterGuess = testLetter[1]
+            else:
+                if(bestMatch < temp2):
+                    bestMatch = temp2
+                    letterGuess = testLetter[1]
+    elif(index > 8 and index < 13): #circle group o c
+        for testLetter in SobelAlphabetList[9:13]:
+            temp1 = compare_images(testLetter[0],histROI,distanceThreshold)
+            temp2 = compare_images(testLetter[0],histMirrorROI,distanceThreshold)
+            if(temp1 > temp2):
+                if(bestMatch < temp1):
+                    bestMatch = temp1
+                    letterGuess = testLetter[1]
+            else:
+                if(bestMatch < temp2):
+                    bestMatch = temp2
+                    letterGuess = testLetter[1]
+    elif(index == 13 or index == 14): #pointing down group p q
+        for testLetter in SobelAlphabetList[13:15]:
+            temp1 = compare_images(testLetter[0],histROI,distanceThreshold)
+            temp2 = compare_images(testLetter[0],histMirrorROI,distanceThreshold)
+            if(temp1 > temp2):
+                if(bestMatch < temp1):
+                    bestMatch = temp1
+                    letterGuess = testLetter[1]
+            else:
+                if(bestMatch < temp2):
+                    bestMatch = temp2
+                    letterGuess = testLetter[1]
+    elif(index == 15 or index == 16): #many finger up group b f
+        for testLetter in SobelAlphabetList[15:17]:
+            temp1 = compare_images(testLetter[0],histROI,distanceThreshold)
+            temp2 = compare_images(testLetter[0],histMirrorROI,distanceThreshold)
+            if(temp1 > temp2):
+                if(bestMatch < temp1):
+                    bestMatch = temp1
+                    letterGuess = testLetter[1]
+            else:
+                if(bestMatch < temp2):
+                    bestMatch = temp2
+                    letterGuess = testLetter[1]
+    elif(index == 17 or index == 18): #sideways point group g h
+        for testLetter in SobelAlphabetList[17:19]:
+            temp1 = compare_images(testLetter[0],histROI,distanceThreshold)
+            temp2 = compare_images(testLetter[0],histMirrorROI,distanceThreshold)
+            if(temp1 > temp2):
+                if(bestMatch < temp1):
+                    bestMatch = temp1
+                    letterGuess = testLetter[1]
+            else:
+                if(bestMatch < temp2):
+                    bestMatch = temp2
+                    letterGuess = testLetter[1]
+    elif(index == 19 or index == 20): #split fingers up v k
+        for testLetter in SobelAlphabetList[19:21]:
+            temp1 = compare_images(testLetter[0],histROI,distanceThreshold)
+            temp2 = compare_images(testLetter[0],histMirrorROI,distanceThreshold)
+            if(temp1 > temp2):
+                if(bestMatch < temp1):
+                    bestMatch = temp1
+                    letterGuess = testLetter[1]
+            else:
+                if(bestMatch < temp2):
+                    bestMatch = temp2
+                    letterGuess = testLetter[1]
+    else:
+        for testLetter in SobelAlphabetList[21:]:
+            temp1 = compare_images(testLetter[0],histROI,distanceThreshold)
+            temp2 = compare_images(testLetter[0],histMirrorROI,distanceThreshold)
+            if(temp1 > temp2):
+                if(bestMatch < temp1):
+                    bestMatch = temp1
+                    letterGuess = testLetter[1]
+            else:
+                if(bestMatch < temp2):
+                    bestMatch = temp2
+                    letterGuess = testLetter[1]
+
+    if(bestMatch > 0.10):
+        return letterGuess
+    else:
+        return ""
+
+
+"""
+  mirrorImage = cv2.flip(image, 1)
+
+    bestMatch = 0
+    temp1 = 0
+    temp2 = 0
+    letterGuess = ""
+    for testLetter in alphabetList:
+        temp1 = compare_images(testLetter[0],image,distanceThreshold)
+        temp2 = compare_images(testLetter[0],mirrorImage,distanceThreshold)
+        if(temp1 > temp2):
+            if(bestMatch < temp1):
+                bestMatch = temp1
+                letterGuess = testLetter[1]
+        else:
+            if(bestMatch < temp2):
+                bestMatch = temp2
+                letterGuess = testLetter[1]
+        #test = str(bestMatch) + ", " + letterGuess
+        #print(test)
+    if(bestMatch > 0.10):
+        return letterGuess
+    else:
+        return ""
+        """

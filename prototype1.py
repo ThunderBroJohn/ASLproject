@@ -74,9 +74,9 @@ def main():
             frame, roi = regionOfInterest.extract_roi(frame)
             if (roi is not None):
                 # roi = imageProcesses.sobel_gradient_edge(roi)
-                #roi2 = roi
-                #roi2 = imageProcesses.sobel_gradient_edge(roi2,(7,7))
-                #roi2 = resize.normalize_image_size(roi2)
+                roi2 = roi
+                roi2 = imageProcesses.sobel_gradient_edge(roi2,(7,7))
+                roi2 = resize.normalize_image_size(roi2)
                 #cv2.imshow("ROI Sobel",roi2)
 
                 #testLetter = imageProcesses.find_match(alphabetListSobel,roi2)
@@ -92,8 +92,9 @@ def main():
                 roi = resize.normalize_image_size(roi)#500 by 500
                 cv2.imshow("ROI", roi)
 
-                #testGuess = imageProcesses.find_match(alphabetListBandW, roi)
-                #print(testGuess)
+
+                testGuess = imageProcesses.group_sorted_comparison(roi,roi2,alphabetListSobel,alphabetListBandW)
+                print(testGuess)
 
                 #letter, percent = imageCompare.compareToLibrary(roi)
 
