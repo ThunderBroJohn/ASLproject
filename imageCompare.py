@@ -70,6 +70,10 @@ def compareImages(source, template, method):
     source = resize.normalize_image_size(source)
     template = resize.normalize_image_size(template)
 
+    # Check to ensure source isn't just solid black or white (would cause a crash)
+    if cv2.countNonZero(source) == 0 or cv2.countNonZero(cv2.bitwise_not(source)) == 0:
+        return 1.01
+
     # Find matches between pictures
     contours, heirarchy = cv2.findContours(source, 2, 1)
     cnt1 = contours[0]
